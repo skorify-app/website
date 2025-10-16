@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Bar dengan Tombol Clear Otomatis</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    .search-container {
+      display: flex;
+      align-items: center;
+      width: 280px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      padding: 5px 10px;
+    }
+
+    .search-container input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    .search-container button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: gray;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-container button:hover i {
+      color: #54b435;
+    }
+
+    /* Sembunyikan tombol clear saat kosong */
+    #clearBtn {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Cari Subtes">
+    <button id="clearBtn" title="Hapus"><i class="bi bi-x-circle"></i></button>
+    <button title="Cari"><i class="bi bi-search"></i></button>
+  </div>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearBtn');
+
+    // Saat teks di input berubah
+    input.addEventListener('input', () => {
+      if (input.value.trim() !== '') {
+        clearBtn.style.display = 'flex'; // Munculkan tombol X
+      } else {
+        clearBtn.style.display = 'none'; // Sembunyikan tombol X
+      }
+    });
+
+    // Saat tombol X diklik
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      clearBtn.style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
