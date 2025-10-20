@@ -13,7 +13,7 @@ Laravel adalah kerangka kerja aplikasi web dengan sintaks yang ekspresif dan ele
 - Berbagai back-end untuk penyimpanan [sesi](https://laravel.com/docs/session) dan [cache](https://laravel.com/docs/cache).
 - [ORM basis data yang ekspresif dan intuitif](https://laravel.com/docs/eloquent).
 - Migrasi skema database yang independen dari database [schema migrations](https://laravel.com/docs/migrations).
-- [Pemrosesan tugas latar belakang yang andal](https://laravel.com/docs/queues).
-- [Penyiaran acara real-time](https://laravel.com/docs/broadcasting).
+- [Pemrosesan queues belakang yang andal](https://laravel.com/docs/queues).
+- [Broadcasting secara real-time](https://laravel.com/docs/broadcasting).
 
 Laravel mudah diakses, bertenaga, dan menyediakan alat yang diperlukan untuk aplikasi besar dan andal.
