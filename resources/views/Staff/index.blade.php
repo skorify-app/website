@@ -233,6 +233,22 @@
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="card-title">Rekap Statistik</h5>
+                                 <div class="offset-1 mt-1 bg-primary"height="40" style=" border-radius: 5px; ">
+                                    <select class="form-control " height="40" style=" border-radius: 5px; ">
+                                        <option>Januari</option>
+                                        <option>Februari</option>
+                                        <option>Maret</option>
+                                        <option>April</option>
+                                        <option>Mei</option>
+                                        <option>Juni</option>
+                                        <option>Juli</option>
+                                        <option>Agustus</option>
+                                        <option>September</option>
+                                        <option>Oktober</option>
+                                        <option>November</option>
+                                        <option>Desember</option>
+                                    </select>
+                                </div>
                             </div>
                     <!-- ini -->
                     <div class="row" style="margin-top: 5vh;">
@@ -278,70 +294,92 @@
                     
                 </div>
                     <!-- Modal Review Pengerjaan Subtes -->
-                                                <div class="modal fade" id="exampleModalCenter">
-                                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                                    <div class="modal-content ">
+                                                <div class="modal fade " id="exampleModalCenter" >
+                                                <div class="modal-dialog modal-dialog-centered " role="document">
+                                                    <div class="modal-content pb-3 ">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Modal title</h5>  
+                                                            <h5 class="modal-title" style="color: black">Detail Rekap Statistik</h5>  
                                                             <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                                                             </button>
                                                             
                                                         </div>
+                                                        <div class="row align-items-center">
                                                         <div class="search-container mt-1" width="10">
                                                             <input type="text" id="searchInput" placeholder="Cari Subtes">
                                                             <button id="clearBtn" title="Hapus"><i class="bi bi-x-circle"></i></button>
                                                             <button title="Cari"><i class="bi bi-search"></i></button>
                                                         </div>
-                                                        <div class="row my-2 " style="margin-right: 10vw;width: 100%; ">
-                                                            <div class="col-4 d-flex align-items-center justify-content-center">
-                                                            <img src="images/skorify-logo.png" width="50" alt="" > 
+                                                        <div class="offset-1 mt-1 bg-primary"height="40" style=" border-radius: 5px; ">
+                                                            <select class="form-control " height="40" style=" border-radius: 5px; ">
+                                                                <option>Januari</option>
+                                                                <option>Februari</option>
+                                                                <option>Maret</option>
+                                                                <option>April</option>
+                                                                <option>Mei</option>
+                                                                <option>Juni</option>
+                                                                <option>Juli</option>
+                                                                <option>Agustus</option>
+                                                                <option>September</option>
+                                                                <option>Oktober</option>
+                                                                <option>November</option>
+                                                                <option>Desember</option>
+                                                            </select>
+                                                        </div>
+                                                        </div>
+                                                        <div class="row my-2" style="width: 100%; ">
+                                                            <div class="col-6 align-items-center  d-flex  ">
+                                                            <img src="images/skorify-logo.png" width="50" alt="" class="margin-image" > 
                                                             <div class="info-text  ">
-                                                            <h5 class="mb-0" style="line-height: 1.1;">Sains</h5>
-                                                            <p>5 Pengerjaan</p>
+                                                            <h5 class="mb-0" style="line-height: 1.1;color:black;">Sains</h5>
+                                                            <p class="mb-0" style="line-height: 1.1;color:black;font-size:0.7rem;">4 Pengerjaan</p>
                                                             </div>
                                                             </div> 
-                                                             <div class=" offset-3 col-4 d-flex align-items-center justify-content-center">
-                                                            <img src="images/skorify-logo.png" width="50" alt="" class="me-2"> 
-                                                            <div class="info-text text-center ">
-                                                            <p class="mb-0" style="line-height: 1.1;">dqoiqhi <br> gwfwfwt8wt9</p>
-                                                            </div>
-                                                            </div> 
-                                                        </div>
-
-                                                        <div class="row my-2 " style="margin-right: 10vw;width: 100%; ">
-                                                            <div class="col-4 d-flex align-items-center justify-content-center">
-                                                            <img src="images/skorify-logo.png" width="50" alt="" class="me-2"> 
-                                                            <div class="info-text text-center ">
-                                                            <p class="mb-0" style="line-height: 1.1;">dqoiqhi <br> gwfwfwt8wt9</p>
-                                                            </div>
-                                                            </div> 
-                                                             <div class=" offset-3 col-4 d-flex align-items-center justify-content-center">
-                                                            <img src="images/skorify-logo.png" width="50" alt="" class="me-2"> 
-                                                            <div class="info-text text-center ">
-                                                            <p class="mb-0" style="line-height: 1.1;">dqoiqhi <br> gwfwfwt8wt9</p>
+                                                             <div class=" col-5 d-flex align-items-center ">
+                                                            <img src="images/skorify-logo.png" width="50" alt="" class="margin-image" > 
+                                                            <div class="info-text " >
+                                                            <h5 class="mb-0" style="line-height: 1.1;color:black;">Matematika</h5>
+                                                            <p class="mb-0 " style="line-height: 1.1;color:black;font-size:0.7rem;">2 Pengerjaan</p>
                                                             </div>
                                                             </div> 
                                                         </div>
 
-                                                        <div class="row my-2 " style="margin-right: 10vw;width: 100%; ">
-                                                            <div class="col-4 d-flex align-items-center justify-content-center">
-                                                            <img src="images/skorify-logo.png" width="50" alt="" class="me-2"> 
-                                                            <div class="info-text text-center ">
-                                                            <p class="mb-0" style="line-height: 1.1;">dqoiqhi <br> gwfwfwt8wt9</p>
+                                                        <div class="row my-2" style="width: 100%; ">
+                                                            <div class="col-6 align-items-center d-flex">
+                                                            <img src="images/skorify-logo.png" width="50" alt="" class="margin-image" > 
+                                                            <div class="info-text  ">
+                                                            <h5 class="mb-0" style="line-height: 1.1;color:black;">Literasi</h5>
+                                                            <p class="mb-0" style="line-height: 1.1;color:black;font-size:0.7rem;">40 Pengerjaan</p>
                                                             </div>
                                                             </div> 
-                                                             <div class=" offset-3 col-4 d-flex align-items-center justify-content-center">
-                                                            <img src="images/skorify-logo.png" width="50" alt="" class="me-2"> 
-                                                            <div class="info-text text-center ">
-                                                            <p class="mb-0" style="line-height: 1.1;">dqoiqhi <br> gwfwfwt8wt9</p>
+                                                             <div class="col-5 d-flex align-items-center">
+                                                            <img src="images/skorify-logo.png" width="50" alt="" class="margin-image" > 
+                                                            <div class="info-text">
+                                                            <h5 class="mb-0" style="line-height: 1.1;color:black;">Computational Thinking </h5>
+                                                            <p class="mb-0 " style="line-height: 1.1;color:black;font-size:0.7rem;">32 Pengerjaan</p>
                                                             </div>
                                                             </div> 
                                                         </div>
 
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                                        <div class="row my-2 " style="width: 100%; ">
+                                                            <div class="col-6 align-items-center  d-flex  ">
+                                                            <img src="images/skorify-logo.png" width="50" alt="" class="margin-image" > 
+                                                            <div class="info-text  ">
+                                                            <h5 class="mb-0" style="line-height: 1.1;color:black;">Bahasa Inggris</h5>
+                                                            <p class="mb-0" style="line-height: 1.1;color:black;font-size:0.7rem;">10 Pengerjaan</p>
+                                                            </div>
+                                                            </div> 
+                                                             <div class="  col-5 d-flex align-items-center ">
+                                                            <img src="images/skorify-logo.png" width="50" alt="" class="margin-image" > 
+                                                            <div class="info-text " >
+                                                            <h5 class="mb-0" style="line-height: 1.1;color:black;">Bahasa Indonesia </h5>
+                                                            <p class="mb-0 " style="line-height: 1.1;color:black;font-size:0.7rem;">20 Pengerjaan</p>
+                                                            </div>
+                                                            </div> 
                                                         </div>
+
+                                                       
+
+                                                        
                                                     </div>
                                                 </div>
                                             </div>

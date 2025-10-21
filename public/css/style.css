@@ -4496,7 +4496,8 @@ a.close.disabled {
   height: 100vh;
   background-color: #000; }
   .modal-backdrop.fade {
-    opacity: 0; }
+    opacity: 0; 
+  }
   .modal-backdrop.show {
     opacity: 0.5; }
 
@@ -8029,6 +8030,12 @@ a {
   .col-xxl-12 {
     flex: 0 0 100%;
     max-width: 100%; } }
+
+
+.margin-image{
+  margin-right: 0.5vw;
+}
+
 
 /* Editable */
 #preloader {
