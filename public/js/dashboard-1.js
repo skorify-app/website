@@ -156,7 +156,7 @@
 
         while (data.length < totalPoints) {
 
-            var prev = data.length > 0 ? data[data.length - 1] : 50,
+            var     v = data.length > 0 ? data[data.length - 1] : 50,
                 y = prev + Math.random() * 10 - 5;
 
             if (y < 0) {

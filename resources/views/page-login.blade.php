@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Focus - Bootstrap Admin Dashboard </title>
+    <title>Masuk</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
     <link href="./css/style.css" rel="stylesheet">
@@ -31,7 +31,7 @@
                                 <div class="auth-form " >
                                     <h2 class="text-center mb-1" style="color: #001D39;"><b>Masuk</b></h2>
                                         <p class="text-center">Masukkan Email dan Kata Sandi anda!</p>
-                                    <form action="index.html">
+                                    <form action="/index">
                                         <div class="form-group">
                                             <label><strong>Email</strong></label>
                                             <input type="email" class="form-control" placeholder="Masukkan Email anda">
@@ -48,7 +48,7 @@
                                             </select>
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn  btn-block" style="background-color: #001D39;color: white;">Masuk</button>
+                                            <button type="submit" class="btn btn-block" style="background-color: #001D39;color: white;">Masuk</button>  
                                         </div>
                                     </form>
                                     

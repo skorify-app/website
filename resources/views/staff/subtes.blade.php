@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Staff Dashboard </title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+    <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
+    <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <style>
+    h2 {
+      margin-top: 0;
+      text-align: left;
+      color: #003366;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .top-bar input {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 200px;
+    }
+
+    .top-bar button {
+      border: none;
+      background: #003366;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .top-bar button:hover {
+      background: #002855;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #003366;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f3f6fa;
+    }
+
+    .actions button {
+      margin: 0 3px;
+      border: none;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 4px;
+    }
+
+    .btn-delete { background-color: #dc3545; color: white; }
+    .btn-edit { background-color: #0d6efd; color: white; }
+    .btn-add { background-color: #28a745; color: white; }
+
+    /* Popup form */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: left;
+      position: relative;
+      animation: fadeIn 0.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-content input, .modal-content button {
+      width: 100%;
+      margin: 8px 0;
+    }
+
+    .modal-content input[type="text"],
+    .modal-content input[type="file"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .modal-content button {
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #003366;
+      color: white;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #002855;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .close-btn:hover { color: #000; }
+
+  </style>
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header" style="background-color: #001D39;">
+            <a href="index.html" class="brand-logo">
+                <img class="logo-abbr" src="./images/skorify-logo.png" width="400" alt="">
+                <img class="logo-compact" src="./images/skorify-logo.png" alt="">
+                <img class="brand-title" src="./images/skorify-text.png" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger" >
+                    <span style="background-color: #001D39;" class="line"></span><span style="background-color: #001D39;" class="line"></span><span style="background-color: #001D39;" class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <div class="search_bar dropdown">
+                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                <div class="dropdown-menu p-0 m-0">
+                                    <form>
+                                        <input class="form-control" type="search" placeholder="Cari" aria-label="Search">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-bell"></i>
+                                    <div class="pulse-css"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <ul class="list-unstyled">
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-user"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Juan</strong> menambahkan <strong>subtes</strong> matematika.
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 WIB</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-shopping-cart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Joel</strong> menghapus <strong>subtes</strong> matematika.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">13:00 WIB</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="danger"><i class="ti-bookmark"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Tian</strong> mengedit <strong>soal</strong> matematika.
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">12:20 WIB</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-heart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Naomi</strong> membuat <strong>subtes</strong>  Bahasa Inggris.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">10:20 WIB</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-image"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong> Nanda</strong> mengedit  <strong>soal</strong> Bahasa Inggris
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">20:20 WIB</span>
+                                        </li>
+                                    </ul>
+                                    <a class="all-notification" href="#">See all notifications <i
+                                            class="ti-arrow-right"></i></a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-account"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="./app-profile.html" class="dropdown-item">
+                                        <i class="icon-user"></i>
+                                        <span class="ml-2">Profil</span>
+                                    </a>
+                                    <a href="./email-inbox.html" class="dropdown-item">
+                                        <i class="icon-envelope-open"></i>
+                                        <span class="ml-2">Kotak Masuk </span>
+                                    </a>
+                                    <a href="./page-login.html" class="dropdown-item">
+                                        <i class="icon-key"></i>
+                                        <span class="ml-2">Keluar </span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="quixnav  ">
+            <div class="quixnav-scroll  " style="width: 100%;">
+                <ul class="metismenu" id="menu" >
+                   
+                    <li><a  href="index.html" aria-expanded="false"><i
+                                class="bi bi-house mt-1"></i><span class="nav-text">Beranda</span></a>
+                       
+                    </li>
+                    <li><a href="javascript:void()" aria-expanded="false"><i
+                                class="bi bi-book mt-1"></i><span class="nav-text">Subtes</span></a>
+                        
+                    </li>
+                    <li><a  href="javascript:void()" aria-expanded="false"><i
+                                class="bi bi-person mt-1"></i><span class="nav-text">Peserta</span></a>
+                        
+                    </li>
+                    <li><a  href="javascript:void()" aria-expanded="false"><i
+                                class="bi bi-gear mt-1   "></i><span class="nav-text ">Pengaturan Akun</span></a>
+                        
+                    </li>
+
+                    
+
+                    
+                </ul>
+            </div>
+
+
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- row -->
+            <div class="container-fluid">
+                <h2>Subtest Ujian Mandiri Polibatam (UMPB)</h2>
+
+  <div class="top-bar">
+    <input type="text" id="search" placeholder="Cari disini">
+    <div>
+      <button id="downloadTemplate">Unduh Template</button>
+      <button id="addSubtestBtn">+ Tambahkan Subtest</button>
+    </div>
+  </div>
+
+  <table id="subtestTable">
+    <thead>
+      <tr>
+        <th>Subtest</th>
+        <th style="width: 180px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Simulasi Ujian Mandiri Polibatam</td>
+        <td class="actions">
+          <button class="btn-delete">🗑</button>
+          <button class="btn-edit">✏️</button>
+          <button class="btn-add">➕</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Matematika</td>
+        <td class="actions">
+          <button class="btn-delete">🗑</button>
+          <button class="btn-edit">✏️</button>
+          <button class="btn-add">➕</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Computational Thinking</td>
+        <td class="actions">
+          <button class="btn-delete">🗑</button>
+          <button class="btn-edit">✏️</button>
+          <button class="btn-add">➕</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal Tambah Subtest -->
+  <div class="modal" id="subtestModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h3>Tambahkan Subtest</h3>
+
+    <label>Nama Subtest</label>
+    <input type="text" id="subtestName" placeholder="Masukkan nama subtest">
+    <button id="saveSubtestName">Simpan</button>
+
+    <label>Upload Soal Subtest (Template Excel)</label>
+    <input type="file" id="subtestFile" accept=".xlsx, .xls">
+    <button id="uploadFile">Simpan</button>
+
+    <button id="finishBtn">Selesai</button>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("subtestModal");
+  const addBtn = document.getElementById("addSubtestBtn");
+  const closeModal = document.getElementById("closeModal");
+  const table = document.getElementById("subtestTable").getElementsByTagName('tbody')[0];
+
+  addBtn.onclick = () => modal.style.display = "flex";
+  closeModal.onclick = () => modal.style.display = "none";
+  window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+  document.getElementById("saveSubtestName").onclick = function() {
+    const name = document.getElementById("subtestName").value.trim();
+    if (name === "") {
+      alert("Nama subtest tidak boleh kosong!");
+      return;
+    }
+
+    const newRow = table.insertRow();
+    newRow.innerHTML = `
+      <td>${name}</td>
+      <td class="actions">
+        <button class="btn-delete">🗑</button>
+        <button class="btn-edit">✏️</button>
+        <button class="btn-add">➕</button>
+      </td>
+    `;
+
+    document.getElementById("subtestName").value = "";
+    alert("Subtest berhasil ditambahkan!");
+  };
+
+  document.getElementById("downloadTemplate").onclick = () => {
+    // Simulasi unduh file template Excel
+    const link = document.createElement("a");
+    link.href = "template_soal.xlsx"; // ganti dengan path template kamu
+    link.download = "Template_Soal_Subtest.xlsx";
+    link.click();
+  };
+
+  // Tambahkan fungsi upload simulasi
+  document.getElementById("uploadFile").onclick = function() {
+    const file = document.getElementById("subtestFile").files[0];
+    if (!file) {
+      alert("Harap pilih file terlebih dahulu!");
+      return;
+    }
+    alert("File " + file.name + " berhasil diupload (simulasi).");
+  };
+
+  document.getElementById("finishBtn").onclick = function() {
+    modal.style.display = "none";
+  };
+</script>
+               
+               
+
+               
+                                               
+ 
+               
+                
+                 
+                    
+               
+              
+                
+
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Developed by <a href="#" target="_blank">PBL-TRPL308</a> 2025</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="{{asset('vendor/global/global.min.js')}}"></script>
+    <script src="{{asset('js/quixnav-init.js')}}"></script>
+    <script src="{{asset('js/custom.min.js')}}"></script>
+
+
+    <!-- Vectormap -->
+    <script src="{{asset('vendor/raphael/raphael.min.js')}}"></script>
+    <script src="{{asset('vendor/morris/morris.min.js')}}"></script>
+
+
+    <script src="{{asset('vendor/circle-progress/circle-progress.min.js')}}"></script>
+    <script src="{{asset('vendor/chart.js/Chart.bundle.min.js')}}"></script>
+
+    <script src="{{asset('vendor/gaugeJS/dist/gauge.min.js')}}"></script>
+
+    <!--  flot-chart js -->
+    <script src="{{asset('vendor/flot/jquery.flot.js')}}"></script>
+    <script src="{{asset('vendor/flot/jquery.flot.resize.js')}}"></script>
+
+    <!-- Owl Carousel -->
+    <script src="{{asset('vendor/owl-carousel/js/owl.carousel.min.js')}}"></script>
+
+    <!-- Counter Up -->
+    <script src="{{asset('vendor/jqvmap/js/jquery.vmap.min.js')}}"></script>
+    <script src="{{asset('vendor/jqvmap/js/jquery.vmap.usa.js')}}"></script>
+    <script src="{{asset('vendor/jquery.counterup/jquery.counterup.min.js')}}"></script>
+
+
+     <script src="{{asset('vendor/global/global.min.js')}}"></script>
+    <script src="{{asset('js/quixnav-init.js')}}"></script>
+    <script src="{{asset('js/custom.min.js')}}"></script>
+    <script src="{{asset('js/dashboard-1.js') }}"></script>
+    <script src="{{asset('js/dashboard-3.js')}}"></script>
+
+
+    
+
+
+
+    <script src="{{asset('vendor/flot/jquery.flot.js')}}"></script>
+    <script src="{{asset('vendor/flot/jquery.flot.pie.js')}}"></script>
+    <script src="{{asset('vendor/flot/jquery.flot.resize.js')}}"></script>
+    <script src="{{asset('vendor/flot-spline/jquery.flot.spline.min.js')}}"></script>
+    <script src="{{asset('js/plugins-init/flot-init.js')}}"></script>
+
+
+    
+      <!-- Required vendors -->
+    <script src="{{asset('vendor/global/global.min.js')}}"></script>
+    <script src="{{asset('js/quixnav-init.js')}}"></script>
+    <script src="{{asset('js/custom.min.js')}}"></script>
+
+     <!-- Chart Morris plugin files -->
+    <script src="{{asset('vendor/raphael/raphael.min.js')}}"></script>
+    <script src="{{asset('vendor/morris/morris.min.js')}}"></script>
+    <script src="{{asset('js/plugins-init/morris-init.js')}}"></script>
+    
+    <!-- CDN BOOTSTRAP -->
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+</body>
+
+</html>
