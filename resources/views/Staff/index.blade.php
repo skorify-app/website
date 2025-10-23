@@ -210,8 +210,8 @@
             <div class="container-fluid">
                
                 <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12">
-                        <div class="card">
+                    <div class="col-xl-12 col-lg-12 col-md-12" >
+                        <div class="card shadow">
                             <div class="card-header">
                                 <h5 class="card-title">Statistik Pengguna</h5>
                             </div>
@@ -230,7 +230,7 @@
 
                <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12">
-                        <div class="card">
+                        <div class="card shadow">
                             <div class="card-header">
                                 <h5 class="card-title">Rekap Statistik</h5>
                                  <div class="offset-1 mt-1 bg-primary"height="40" style=" border-radius: 5px; ">

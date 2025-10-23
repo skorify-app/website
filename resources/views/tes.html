@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daftar Subtest - Skorify</title>
+
+  <!-- CDN SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -49,6 +53,7 @@
       padding: 8px 14px;
       border-radius: 6px;
       cursor: pointer;
+      transition: 0.2s;
     }
 
     .top-bar button:hover {
@@ -82,11 +87,16 @@
       cursor: pointer;
       padding: 6px 8px;
       border-radius: 4px;
+      transition: 0.2s;
     }
 
     .btn-delete { background-color: #dc3545; color: white; }
     .btn-edit { background-color: #0d6efd; color: white; }
     .btn-add { background-color: #28a745; color: white; }
+
+    .btn-delete:hover { background-color: #b02a37; }
+    .btn-edit:hover { background-color: #0b5ed7; }
+    .btn-add:hover { background-color: #1e7e34; }
 
     /* Popup form */
     .modal {
@@ -135,6 +145,7 @@
       background-color: #003366;
       color: white;
       cursor: pointer;
+      transition: 0.2s;
     }
 
     .modal-content button:hover {
@@ -227,14 +238,20 @@
   const closeModal = document.getElementById("closeModal");
   const table = document.getElementById("subtestTable").getElementsByTagName('tbody')[0];
 
+  // Buka dan tutup modal
   addBtn.onclick = () => modal.style.display = "flex";
   closeModal.onclick = () => modal.style.display = "none";
   window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
 
+  // Tambah subtest baru
   document.getElementById("saveSubtestName").onclick = function() {
     const name = document.getElementById("subtestName").value.trim();
     if (name === "") {
-      alert("Nama subtest tidak boleh kosong!");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Nama subtest tidak boleh kosong!',
+        confirmButtonColor: '#003366'
+      });
       return;
     }
 
@@ -249,30 +266,73 @@
     `;
 
     document.getElementById("subtestName").value = "";
-    alert("Subtest berhasil ditambahkan!");
+    Swal.fire({
+      icon: 'success',
+      title: 'Subtest berhasil ditambahkan!',
+      showConfirmButton: false,
+      timer: 1500
+    });
   };
 
+  // Unduh template Excel
   document.getElementById("downloadTemplate").onclick = () => {
-    // Simulasi unduh file template Excel
     const link = document.createElement("a");
-    link.href = "template_soal.xlsx"; // ganti dengan path template kamu
+    link.href = "template_soal.xlsx"; // ganti sesuai file kamu
     link.download = "Template_Soal_Subtest.xlsx";
     link.click();
   };
 
-  // Tambahkan fungsi upload simulasi
+  // Upload file Excel (simulasi)
   document.getElementById("uploadFile").onclick = function() {
     const file = document.getElementById("subtestFile").files[0];
     if (!file) {
-      alert("Harap pilih file terlebih dahulu!");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Harap pilih file terlebih dahulu!',
+        confirmButtonColor: '#003366'
+      });
       return;
     }
-    alert("File " + file.name + " berhasil diupload (simulasi).");
+    Swal.fire({
+      icon: 'success',
+      title: 'File ' + file.name + ' berhasil diupload (simulasi)!',
+      showConfirmButton: false,
+      timer: 1500
+    });
   };
 
   document.getElementById("finishBtn").onclick = function() {
     modal.style.display = "none";
   };
+
+  // Fungsi hapus subtest dengan SweetAlert2
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn-delete')) {
+      const row = e.target.closest('tr');
+      const subtestName = row.querySelector('td').textContent;
+
+      Swal.fire({
+        title: `Hapus subtest "${subtestName}"?`,
+        text: "Data ini akan dihapus dari daftar!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          row.remove();
+          Swal.fire({
+            icon: 'success',
+            title: 'Subtest berhasil dihapus!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+      });
+    }
+  });
 </script>
 
 </body>

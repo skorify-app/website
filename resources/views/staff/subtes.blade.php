@@ -13,139 +13,8 @@
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="./css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-    h2 {
-      margin-top: 0;
-      text-align: left;
-      color: #003366;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .top-bar input {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 200px;
-    }
-
-    .top-bar button {
-      border: none;
-      background: #003366;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .top-bar button:hover {
-      background: #002855;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-
-    th {
-      background-color: #003366;
-      color: white;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f3f6fa;
-    }
-
-    .actions button {
-      margin: 0 3px;
-      border: none;
-      cursor: pointer;
-      padding: 6px 8px;
-      border-radius: 4px;
-    }
-
-    .btn-delete { background-color: #dc3545; color: white; }
-    .btn-edit { background-color: #0d6efd; color: white; }
-    .btn-add { background-color: #28a745; color: white; }
-
-    /* Popup form */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      width: 400px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      text-align: left;
-      position: relative;
-      animation: fadeIn 0.2s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .modal-content input, .modal-content button {
-      width: 100%;
-      margin: 8px 0;
-    }
-
-    .modal-content input[type="text"],
-    .modal-content input[type="file"] {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .modal-content button {
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
-      background-color: #003366;
-      color: white;
-      cursor: pointer;
-    }
-
-    .modal-content button:hover {
-      background-color: #002855;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 14px;
-      font-size: 18px;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .close-btn:hover { color: #000; }
-
-  </style>
 </head>
 
 <body>
@@ -341,121 +210,69 @@
         <div class="content-body">
             <!-- row -->
             <div class="container-fluid">
-                <h2>Subtest Ujian Mandiri Polibatam (UMPB)</h2>
+                <h2>Subtes Ujian Mandiri Polibatam (UMPB)</h2>
 
   <div class="top-bar">
     <input type="text" id="search" placeholder="Cari disini">
     <div>
       <button id="downloadTemplate">Unduh Template</button>
-      <button id="addSubtestBtn">+ Tambahkan Subtest</button>
+      <button id="addSubtestBtn">Tambahkan Subtest</button>
     </div>
   </div>
 
-  <table id="subtestTable">
+  <table  id="subtestTable">
     <thead>
       <tr>
-        <th>Subtest</th>
-        <th style="width: 180px;">Aksi</th>
+        <th style="border-top-left-radius:10px;">Subtes</th>
+        <th style="width: 50%;border-top-right-radius:10px;">Aksi</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>Simulasi Ujian Mandiri Polibatam</td>
         <td class="actions">
-          <button class="btn-delete">🗑</button>
-          <button class="btn-edit">✏️</button>
-          <button class="btn-add">➕</button>
+          <button class="btn-delete bi bi-trash3"></button>
+          <button class="btn-edit bi bi-pencil-square"></button>
+          <button class="btn-add bi bi-eye"></button>
         </td>
       </tr>
       <tr>
         <td>Matematika</td>
         <td class="actions">
-          <button class="btn-delete">🗑</button>
-          <button class="btn-edit">✏️</button>
-          <button class="btn-add">➕</button>
+          <button class="btn-delete bi bi-trash3"></button>
+          <button class="btn-edit bi bi-pencil-square"></button>
+          <button class="btn-add bi bi-eye"></button>
         </td>
       </tr>
       <tr>
         <td>Computational Thinking</td>
         <td class="actions">
-          <button class="btn-delete">🗑</button>
-          <button class="btn-edit">✏️</button>
-          <button class="btn-add">➕</button>
+          <button class="btn-delete bi bi-trash3"></button>
+          <button class="btn-edit bi bi-pencil-square"></button>
+          <button class="btn-add bi bi-eye"></button>
         </td>
       </tr>
     </tbody>
   </table>
 
   <!-- Modal Tambah Subtest -->
-  <div class="modal" id="subtestModal">
-  <div class="modal-content">
-    <span class="close-btn" id="closeModal">&times;</span>
-    <h3>Tambahkan Subtest</h3>
+  <div class="modal-subtes" id="subtestModal">
+    <div class="modal-contentSubtes">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h3>Tambahkan Subtest</h3>
 
-    <label>Nama Subtest</label>
-    <input type="text" id="subtestName" placeholder="Masukkan nama subtest">
-    <button id="saveSubtestName">Simpan</button>
+      <label>Nama Subtest</label>
+      <input type="text" id="subtestName" placeholder="Masukkan nama subtest" />
 
-    <label>Upload Soal Subtest (Template Excel)</label>
-    <input type="file" id="subtestFile" accept=".xlsx, .xls">
-    <button id="uploadFile">Simpan</button>
+      <label>Upload Soal Subtest (Excel)</label>
+      <input type="file" id="subtestFile" accept=".xlsx, .xls" />
 
-    <button id="finishBtn">Selesai</button>
+      <button id="saveSubtest">Simpan</button>
+    </div>
   </div>
-</div>
 
 <script>
-  const modal = document.getElementById("subtestModal");
-  const addBtn = document.getElementById("addSubtestBtn");
-  const closeModal = document.getElementById("closeModal");
-  const table = document.getElementById("subtestTable").getElementsByTagName('tbody')[0];
-
-  addBtn.onclick = () => modal.style.display = "flex";
-  closeModal.onclick = () => modal.style.display = "none";
-  window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
-
-  document.getElementById("saveSubtestName").onclick = function() {
-    const name = document.getElementById("subtestName").value.trim();
-    if (name === "") {
-      alert("Nama subtest tidak boleh kosong!");
-      return;
-    }
-
-    const newRow = table.insertRow();
-    newRow.innerHTML = `
-      <td>${name}</td>
-      <td class="actions">
-        <button class="btn-delete">🗑</button>
-        <button class="btn-edit">✏️</button>
-        <button class="btn-add">➕</button>
-      </td>
-    `;
-
-    document.getElementById("subtestName").value = "";
-    alert("Subtest berhasil ditambahkan!");
-  };
-
-  document.getElementById("downloadTemplate").onclick = () => {
-    // Simulasi unduh file template Excel
-    const link = document.createElement("a");
-    link.href = "template_soal.xlsx"; // ganti dengan path template kamu
-    link.download = "Template_Soal_Subtest.xlsx";
-    link.click();
-  };
-
-  // Tambahkan fungsi upload simulasi
-  document.getElementById("uploadFile").onclick = function() {
-    const file = document.getElementById("subtestFile").files[0];
-    if (!file) {
-      alert("Harap pilih file terlebih dahulu!");
-      return;
-    }
-    alert("File " + file.name + " berhasil diupload (simulasi).");
-  };
-
-  document.getElementById("finishBtn").onclick = function() {
-    modal.style.display = "none";
-  };
+  
 </script>
                
                
@@ -541,6 +358,7 @@
     <script src="{{asset('js/custom.min.js')}}"></script>
     <script src="{{asset('js/dashboard-1.js') }}"></script>
     <script src="{{asset('js/dashboard-3.js')}}"></script>
+    <script src="{{asset('js/tabel-subtes.js')}}"></script>
 
 
     
