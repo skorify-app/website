@@ -15,8 +15,8 @@
     // Tombol "Unduh Template"
     document.getElementById("downloadTemplate").onclick = () => {
       const link = document.createElement("a");
-      link.href = "template_soal.xlsx"; // ganti dengan path file kamu
-      link.download = "Template_Soal_Subtest.xlsx";
+      link.href = "http://127.0.0.1:8000/Template_Soal_Subtest.xltx"; // ganti dengan path file kamu
+      link.download = "Template_Soal_Subtest.xltx";
       link.click();
     };
 
