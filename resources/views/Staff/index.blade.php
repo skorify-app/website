@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Staff Dashboard </title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+    <link rel="icon" type="image/x-icon" sizes="96x96" href="{{ asset('images/skorify-logo.ico') }}">
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -42,7 +42,7 @@
         ***********************************-->
         <div class="nav-header" style="background-color: #001D39;">
             <a href="index.html" class="brand-logo">
-                <img class="logo-abbr" src="./images/skorify-logo.png" width="400" alt="">
+                <img class="logo-abbr" src="./images/skorify-logo.png" width="100" alt="">
                 <img class="logo-compact" src="./images/skorify-logo.png" alt="">
                 <img class="brand-title" src="./images/skorify-text.png" alt="">
             </a>
