@@ -13,3 +13,7 @@ Route::get('/index', function () {
 Route::get('/subtes', function () {
     return view('staff.subtes');
 });
+
+Route::get('/admin/dasboard', function () {
+    return view('Admin.dasboard');
+});
