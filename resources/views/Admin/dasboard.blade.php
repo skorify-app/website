@@ -275,7 +275,7 @@
                                         <select class="form-control month-selector mb-2" style="width:160px;">
                                             <option>Agustus</option>
                                         </select>
-                                        <div><a href="#" class="small text-muted">Lihat detail</a></div>
+                                        <div><a href="#" class="small text-muted" data-toggle="modal" data-target="#statisticsDetailModal">Lihat detail</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -363,6 +363,174 @@
 
     <!-- App script -->
     <script src="{{ asset('js/admin.js') }}"></script>
+        <!-- Statistics Detail Modal (inline) -->
+        <div class="modal fade" id="statisticsDetailModal" tabindex="-1" role="dialog" aria-labelledby="statisticsDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="statisticsDetailModalLabel">Detail statistics recap</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <input id="modalSearchInput" type="text" class="form-control" placeholder="Cari subtest disini">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" type="button"><i class="mdi mdi-magnify"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <select id="modalMonthSelector" class="form-control">
+                                    <option>Agustus</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row" id="modalSubjectsContainer">
+                            <!-- Matematika -->
+                            <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="matematika">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="subject-icon mr-3">
+                                            <img src="{{ asset('images/subjects/math.png') }}" alt="Matematika" style="width:60px;height:60px;object-fit:contain;">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Matematika</h6>
+                                            <small class="text-muted">5 Pengerjaan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bahasa Indonesia -->
+                            <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="bahasa-indonesia">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="subject-icon mr-3">
+                                            <img src="{{ asset('images/subjects/indo.png') }}" alt="Bahasa Indonesia" style="width:60px;height:60px;object-fit:contain;">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Bahasa Indonesia</h6>
+                                            <small class="text-muted">2 Pengerjaan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sains -->
+                            <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="sains">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="subject-icon mr-3">
+                                            <img src="{{ asset('images/subjects/science.png') }}" alt="Sains" style="width:60px;height:60px;object-fit:contain;">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Sains</h6>
+                                            <small class="text-muted">3 Pengerjaan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bahasa Inggris -->
+                            <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="bahasa-inggris">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="subject-icon mr-3">
+                                            <img src="{{ asset('images/subjects/english.png') }}" alt="Bahasa Inggris" style="width:60px;height:60px;object-fit:contain;">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Bahasa Inggris</h6>
+                                            <small class="text-muted">1 Pengerjaan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Computational Thinking -->
+                            <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="computational-thinking">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="subject-icon mr-3">
+                                            <img src="{{ asset('images/subjects/computational.png') }}" alt="Computational Thinking" style="width:60px;height:60px;object-fit:contain;">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Computational Thinking</h6>
+                                            <small class="text-muted">4 Pengerjaan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Detail Modal (inline) -->
+        <div class="modal fade" id="subjectDetailModal" tabindex="-1" role="dialog" aria-labelledby="subjectDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="subjectDetailModalLabel">Detail</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div id="subjectDetailImageWrap" style="display:inline-block;padding:10px;background:#f6f8fb;border-radius:8px;">
+                            <img id="subjectDetailImage" src="" alt="" style="max-width:320px;max-height:320px;object-fit:contain;">
+                        </div>
+                        <h5 class="mt-3" id="subjectDetailTitle"></h5>
+                        <p class="text-muted" id="subjectDetailCount"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .subject-icon { width:60px; height:60px; display:flex; align-items:center; justify-content:center; background:#f6f8fb; border-radius:8px; }
+            .modal .card { box-shadow:none; }
+        </style>
+
+        <script>
+        // search inside modal
+        $(document).ready(function() {
+            $('#modalSearchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#modalSubjectsContainer .subject-card').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            // open subject detail when a subject-card inside the statistics modal is clicked
+            $(document).on('click', '#statisticsDetailModal .subject-card', function (e) {
+                    e.preventDefault();
+                    var $card = $(this);
+                    var imgSrc = $card.find('img').attr('src');
+                    var title = $card.find('h6').first().text() || $card.find('h5').first().text();
+                    var countText = $card.find('small.text-muted').first().text();
+
+                    if (imgSrc) {
+                            $('#subjectDetailImage').attr('src', imgSrc);
+                    }
+                    $('#subjectDetailTitle').text(title);
+                    $('#subjectDetailCount').text(countText);
+
+                    $('#subjectDetailModal').modal('show');
+            });
+        });
+        </script>
 </body>
 
 </html>
