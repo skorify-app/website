@@ -17,3 +17,7 @@ Route::get('/subtes', function () {
 Route::get('/admin/dasboard', function () {
     return view('Admin.dasboard');
 });
+
+Route::get('/admin/tambahadmin', function () {
+    return view('Admin.tambahadmin');
+});

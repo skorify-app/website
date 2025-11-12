@@ -116,3 +116,37 @@ $(document).ready(function() {
         }
     });
 })();
+
+// ===== FIX UNTUK MODAL DAN DROPDOWN =====
+$(document).on('shown.bs.modal', function() {
+    // Pastikan body bisa di-scroll
+    $('body').css('overflow', 'auto');
+    $('body').css('padding-right', '0');
+});
+
+$(document).on('hidden.bs.modal', function() {
+    // Pastikan dropdown tetap berfungsi
+    $('body').css('overflow', 'auto');
+    $('body').css('padding-right', '0');
+});
+
+// Pastikan dropdown di header tetap berfungsi
+$(document).on('click', '.nav-item.dropdown > a, .nav-item.dropdown > .nav-link', function(e) {
+    var $parent = $(this).parent('.nav-item.dropdown');
+    var $menu = $parent.find('.dropdown-menu').first();
+    
+    if ($menu.length) {
+        e.preventDefault();
+        $menu.toggleClass('show');
+        $parent.toggleClass('show');
+        $(this).attr('aria-expanded', $menu.hasClass('show'));
+    }
+});
+
+// Close dropdown ketika klik di luar
+$(document).on('click', function(e) {
+    if (!$(e.target).closest('.nav-item.dropdown').length) {
+        $('.nav-item.dropdown .dropdown-menu').removeClass('show');
+        $('.nav-item.dropdown').removeClass('show');
+    }
+});
