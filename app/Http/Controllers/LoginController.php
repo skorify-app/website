@@ -2,15 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
 use illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
-    function showLoginForm()
+    public function store(Request $request): RedirectResponse
     {
-        return view("page-login");
+        $request->validate([
+            "email"=> "required|email",
+            "password"=> "required|min:8|max:128"
+        ]);
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->route('dashboard');
+        }
+
+        return Redirect::back()
+            ->withErrors(['msg' => 'Email atau password Anda salah.'])
+            ->withInput($request->only('email'));
     }
 
     public function login(Request $request)
