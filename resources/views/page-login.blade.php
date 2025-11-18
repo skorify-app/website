@@ -12,6 +12,7 @@
 
 </head>
 
+
 <body class="h-100 bg-skorify">
     <div class="authincation h-100">
         <div class="container-fluid h-100">
@@ -31,7 +32,8 @@
                                 <div class="auth-form " >
                                     <h2 class="text-center mb-1" style="color: #001D39;"><b>Masuk</b></h2>
                                         <p class="text-center">Masukkan Email dan Kata Sandi anda!</p>
-                                    <form action="/index">
+                                    <form action="{{ route('login.process') }}" method="POST">
+                                        @csrf
                                         <div class="form-group">
                                             <label><strong>Email</strong></label>
                                             <input type="email" class="form-control" placeholder="Masukkan Email anda">
@@ -44,7 +46,7 @@
                                             <label><strong>Peran</strong></label>
                                             <select class="form-control ">
                                                 <option>Staff</option>
-                                                <option>Admin</option>
+                                                <option>ADMIN</option>
                                             </select>
                                         </div>
                                         <div class="text-center">

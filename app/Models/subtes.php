@@ -9,8 +9,8 @@ class Subtes extends Model
 {
     use HasFactory;
 
-    protected $table = 'subtes';
-    protected $fillable = ['nama_subtes'];
+    protected $table = 'subtests';
+    protected $fillable = ['subtest_name'];
 
     public function soal()
     {

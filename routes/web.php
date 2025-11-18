@@ -1,15 +1,36 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SubtesController;
+use App\Http\Controllers\AuthController;
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/admin/dashboard', function() {
+    return "Welcome Admin!";
+})->middleware('auth');
+
+Route::get('/staff/dashboard', function() {
+    return "Welcome Staff!";
+})->middleware('auth');
+
+Route::middleware('authCheck')->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('Admin.dasboard');
+    });
+
+    Route::get('/staff/dashboard', function () {
+        return view('staff.index');
+    });
+});
+
 
 Route::get('/', function () {
     return view('page-login');
 });
-
-Route::post('/subtes', [SubtesController::class, 'store'])->name('subtes.store');
-Route::get('/subtes', [SubtesController::class, 'index'])->name('subtes.index');
-
 
 
 
@@ -32,3 +53,4 @@ Route::get('/admin/dasboard', function () {
 Route::get('/admin/tambahadmin', function () {
     return view('Admin.tambahadmin');
 });
+

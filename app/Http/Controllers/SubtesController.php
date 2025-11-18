@@ -18,7 +18,7 @@ class SubtesController extends Controller
             ]);
 
             $subtes = Subtes::create([
-                'nama_subtes' => $request->nama_subtes,
+                'subtest_name' => $request->subtest_name,
             ]);
 
             Excel::import(new SoalImport($subtes->id), $request->file('file_soal'));
