@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Models\Account;
 
 class AuthController extends Controller
@@ -22,19 +21,20 @@ class AuthController extends Controller
             'role' => 'required'
         ]);
 
-        $user = Account::where('email', $request->email)
-            ->where('role', $request->role)
+        $user = Account::where('email', $request->input('email'))->first()
+            ->where('role', $request->input('role'))
             ->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Email, password, atau role salah!');
+        if (!$user || !password_verify($request->input('password'), $user->password)) {
+            return 'SALAH';
+            //return back()->with('error', 'Email, password, atau role salah!');
         }
 
         Auth::login($user);
 
         return ($user->role === 'ADMIN')
-            ? redirect('/Admin/dasboard')
-            : redirect('/staff/index');
+            ? redirect('/Admin/dashboard')
+            : redirect('/staff/dashboard');
     }
 
     public function logout()

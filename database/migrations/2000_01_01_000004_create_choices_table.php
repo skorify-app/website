@@ -9,10 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('choices', function (Blueprint $table) {
-            $table->foreign('question_id')
-                ->references('question_id')->on('questions')->onDelete('cascade');
+            $table->unsignedInteger('question_id');
             $table->char('label', 1);
             $table->string('choice_value', 100);
+
+            $table->foreign('question_id')
+                ->references('question_id')->on('questions')->onDelete('cascade');
         });
     }
 

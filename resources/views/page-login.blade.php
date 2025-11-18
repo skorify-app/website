@@ -19,10 +19,10 @@
             <div class="row h-100 align-items-center">
                 <div class="col-md-5 offset-1 ">
                     <h1 class="display-4 " style="color: white;font-weight: 500;"><b> Selamat Datang!</b></h1>
-                    <p style="color: white;;">Skorify 
-                           adalah layanan yang menyediakan sarana 
-                              simulasi ujian bagi calon mahasiswa Politeknik 
-                               Negeri Batam dalam rangka mempersiapkan diri 
+                    <p style="color: white;;">Skorify
+                           adalah layanan yang menyediakan sarana
+                              simulasi ujian bagi calon mahasiswa Politeknik
+                               Negeri Batam dalam rangka mempersiapkan diri
                                  menghadapi Ujian Mandiri Polibatam. </p>
                 </div>
                 <div class="col-md-4 offset-1 ">
@@ -36,24 +36,24 @@
                                         @csrf
                                         <div class="form-group">
                                             <label><strong>Email</strong></label>
-                                            <input type="email" class="form-control" placeholder="Masukkan Email anda">
+                                            <input type="email" name="email" class="form-control" placeholder="Masukkan Email anda">
                                         </div>
                                         <div class="form-group">
                                             <label><strong>Kata Sandi</strong></label>
-                                            <input type="password" class="form-control" placeholder="Masukkan Kata Sandi anda">
+                                            <input type="password" name="password" class="form-control" placeholder="Masukkan Kata Sandi anda">
                                         </div>
                                       <div class="form-group">
                                             <label><strong>Peran</strong></label>
-                                            <select class="form-control ">
-                                                <option>Staff</option>
-                                                <option>ADMIN</option>
+                                            <select class="form-control" name="role">
+                                                <option value="STAFF">Staff</option>
+                                                <option value="ADMIN">Admin</option>
                                             </select>
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-block" style="background-color: #001D39;color: white;">Masuk</button>  
+                                            <button type="submit" class="btn btn-block" style="background-color: #001D39;color: white;">Masuk</button>
                                         </div>
                                     </form>
-                                    
+
                                 </div>
                             </div>
                         </div>

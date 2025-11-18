@@ -10,12 +10,15 @@ return new class extends Migration
     {
         Schema::create('scores', function (Blueprint $table) {
             $table->integerIncrements('score_id')->primary();
+            $table->unsignedSmallInteger('subtest_id');
+            $table->ulid('account_id');
+
             $table->foreign('subtest_id')
                 ->references('subtest_id')->on('subtests')->onDelete('cascade');
             $table->foreign('account_id')
                 ->references('account_id')->on('accounts')->onDelete('cascade');
             $table->smallInteger('score');
-            $table->timestamps('recorded_at');
+            $table->timestamp('recorded_at')->useCurrent();
         });
     }
 

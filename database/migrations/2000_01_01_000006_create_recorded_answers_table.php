@@ -9,6 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recorded_answers', function (Blueprint $table) {
+            $table->unsignedInteger('score_id');
+            $table->unsignedInteger('question_id');
+
             $table->foreign('score_id')
                 ->references('score_id')->on('scores')->onDelete('cascade');
             $table->foreign('question_id')

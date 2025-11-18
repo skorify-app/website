@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('questions', function (Blueprint $table) {
-            $table->integerIncrements('questions_id')->primary();
+            $table->integerIncrements('question_id')->primary();
             $table->smallInteger('subtest_id');
-            $table->string('questions_text', 256);
+            $table->string('question_text', 256);
             $table->char('answer_label', 1);
         });
     }
