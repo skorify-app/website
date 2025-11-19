@@ -40,7 +40,7 @@
         <!--**********************************
             Nav header start
         ***********************************-->
-        <div class="nav-header" style="background-color: #001D39;">
+        <d iv class="nav-header" style="background-color: #001D39;">
             <a href="index.html" class="brand-logo">
                 <img class="logo-abbr" src="./images/skorify-logo.png" width="100" alt="">
                 <img class="logo-compact" src="./images/skorify-logo.png" alt="">
