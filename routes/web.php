@@ -5,6 +5,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubtestController;
 
 
 
@@ -36,7 +37,6 @@ Route::middleware('authCheck')->group(function () {
 });
 
 
-
 // Staff Routes
 Route::get('/index', function () {
     return view('staff.index');
@@ -51,3 +51,6 @@ Route::get('/admin/tambahadmin', function () {
     return view('Admin.tambahadmin');
 });
 
+
+Route::resource('subtests', SubtestController::class);
+Route::get('/subtes', [SubtestController::class, 'index'])->name('subtests.index');

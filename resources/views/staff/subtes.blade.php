@@ -224,12 +224,15 @@
     <thead>
       <tr>
         <th style="border-top-left-radius:10px;">Subtes</th>
-        <th style="width: 50%;border-top-right-radius:10px;">Aksi</th>
+        <th>Gambar</th>
+        <th style="width: 40%;border-top-right-radius:10px;">Aksi</th>
       </tr>
     </thead>
     <tbody>
+        @foreach($subtests as $subtest)
       <tr>
         <td>Simulasi Ujian Mandiri Polibatam</td>
+        <td><img width="40" src="{{ asset('images/skorify-logo.png') }}" alt=""></td>
         <td class="actions">
           <button class="btn-delete bi bi-trash3"></button>
           <button class="btn-edit bi bi-pencil-square"></button>
@@ -237,15 +240,34 @@
         </td>
       </tr>
       <tr>
-        <td>Matematika</td>
+        <td>{{ $subtest->subtest_name }}</td>
+        <td>@if($subtest->subtest_image_name)
+                    <img src="{{ Storage::url('images/' . $subtest->subtest_image_name) }}" alt="Gambar Subtes" width="100">
+                @else
+                    Tidak ada Gambar
+                @endif
+            </td>
         <td class="actions">
-          <button class="btn-delete bi bi-trash3"></button>
-          <button class="btn-edit bi bi-pencil-square"></button>
-          <button class="btn-add bi bi-eye"></button>
+             <form action="{{ route('subtests.destroy', $subtest->subtest_id) }}" method="POST" style="display: inline;">
+             @csrf
+            @method('DELETE')
+            <button type="submit" onclick="return confirm('Yakin ingin menghapus?')">Delete</button>
+            <button class="btn-delete bi bi-trash3"></button>
+            </form>
+            <a href="#" class="btn-edit" 
+            data-id="{{ $subtest->subtest_id }}"
+            data-name="{{ $subtest->subtest_name }}"
+            data-image="{{ $subtest->subtest_image_name }}"
+            data-bs-toggle="modal" 
+            data-bs-target="#subtestModal">
+            <button class="btn-edit bi bi-pencil-square"></button>
+            </a>
         </td>
       </tr>
+      @endforeach
       <tr>
         <td>Computational Thinking</td>
+        <td><img width="40" src="{{ asset('images/skorify-logo.png') }}" alt=""></td>
         <td class="actions">
           <button class="btn-delete bi bi-trash3"></button>
           <button class="btn-edit bi bi-pencil-square"></button>
@@ -262,16 +284,28 @@
       <h3>Tambahkan Subtest</h3>
 
       {{-- Form --}}
-      <form id="subtestForm" action="/upload" method="POST" enctype="multipart/form-data">
+      <form  action="{{ route('subtests.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
-      <label>Nama Subtes</label>
-      <input type="text" id="subtestName" name="nama_subtes" placeholder="Masukkan nama subtes" />
+      <label for="subtest_name">Nama Subtes</label>
+      <input type="text" name="subtest_name" value="{{ old('subtest_name') }}" placeholder="Masukkan nama subtes" required />
 
-      <label>Upload Soal Subtes (Excel)</label>
-      <input type="file" id="subtestFile" name="file_soal" accept=".xlsx, .xls, .xltx, .xlt" />
+      <label for="excel_file">Upload Soal Subtes (Excel)</label>
+      <input type="file" name="excel_file" accept=".xlsx, .xls, .xltx, .xlt, .csv" required />
+
+      <label for="subtest-image">Upload Gambar Subtes</label>
+      <input type="file" name="subtest_image" accept="image/*" />
 
       <button type="submit" id="saveSubtest">Simpan</button>
       </form>
+      @if ($errors->any())
+    <div style="color: red;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     </div>
   </div>
 
@@ -387,7 +421,7 @@
     
     <!-- CDN BOOTSTRAP -->
      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
 </body>
 
 </html>
