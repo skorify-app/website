@@ -1,17 +1,25 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubtesController;
-use App\Http\Controllers\AuthController;
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin/dashboard', function() {
-    return "Welcome Admin!";
-})->middleware('auth');
+
+# Main page
+Route::get('/', [IndexController::class, 'index'])->name('index');
+
+# Log in routes
+Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+
+# Log out route
+Route::get('/logout', [LogoutController::class, 'destroy'])->name('logout');
+
+# Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+
 
 Route::get('/staff/dashboard', function() {
     return "Welcome Staff!";
@@ -28,11 +36,6 @@ Route::middleware('authCheck')->group(function () {
 });
 
 
-Route::get('/', function () {
-    return view('page-login');
-});
-
-
 
 // Staff Routes
 Route::get('/index', function () {
@@ -43,12 +46,6 @@ Route::get('/subtes', function () {
     return view('staff.subtes');
 });
 
-
-
-// Admin Routes
-Route::get('/admin/dasboard', function () {
-    return view('Admin.dasboard');
-});
 
 Route::get('/admin/tambahadmin', function () {
     return view('Admin.tambahadmin');

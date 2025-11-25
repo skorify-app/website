@@ -11,7 +11,7 @@ class AuthCheck
     public function handle(Request $request, Closure $next)
 {
     if (!session('logged_in')) {
-        return redirect('/login')->with('error', 'Silakan login dulu!');
+        return redirect('/')->with('error', 'Silakan masuk akun terlebih dahulu.');
     }
 
     return $next($request);
