@@ -143,7 +143,7 @@
                                     <i class="mdi mdi-account"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a href="./app-profile.html" class="dropdown-item">
+                                    <a href="{{ url('/profile') }}" class="dropdown-item">
                                         <i class="icon-user"></i>
                                         <span class="ml-2">Profil</span>
                                     </a>
@@ -151,7 +151,7 @@
                                         <i class="icon-envelope-open"></i>
                                         <span class="ml-2">Kotak Masuk </span>
                                     </a>
-                                    <a href="./page-login.html" class="dropdown-item">
+                                    <a href="{{ url('/logout') }}" class="dropdown-item">
                                         <i class="icon-key"></i>
                                         <span class="ml-2">Keluar </span>
                                     </a>
@@ -170,10 +170,10 @@
             Sidebar start
         ***********************************-->
         <div class="quixnav  ">
-            <div class="quixnav-scroll  " style="width: 100%;">
+            <div class="quixnav-scroll  " style="width: 100%;overflow-x: hidden !important;">
                 <ul class="metismenu" id="menu" >
                    
-                    <li><a  href="index.html" aria-expanded="false"><i
+                    <li><a  href="{{ url('/index') }}" aria-expanded="false"><i
                                 class="bi bi-house mt-1"></i><span class="nav-text">Beranda</span></a>
                        
                     </li>
@@ -185,7 +185,7 @@
                                 class="bi bi-person mt-1"></i><span class="nav-text">Peserta</span></a>
                         
                     </li>
-                    <li><a  href="javascript:void()" aria-expanded="false"><i
+                    <li><a  href="{{ url('/profile') }}" aria-expanded="false"><i
                                 class="bi bi-gear mt-1   "></i><span class="nav-text ">Pengaturan Akun</span></a>
                         
                     </li>
