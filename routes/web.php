@@ -30,6 +30,16 @@ Route::delete('/subtest/{subtest_id}', [SubtestController::class, 'delete'])
     ->name('subtest.delete')->middleware('auth');
 
 
+// Pengerjaan Soal (Staff)
+ Route::get('/staff/pengerjaan', function () {
+    return view('Staff.pengerjaan');
+});
+
+// Pengerjaan Soal (Admin)
+Route::get('/admin/pengerjaan', function () {
+    return view('Admin.pengerjaan');
+})->name('admin.pengerjaan');
+
 
 Route::get('/admin/tambahadmin', function () {
     return view('Admin.tambahadmin');
