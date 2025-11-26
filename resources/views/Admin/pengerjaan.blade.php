@@ -184,10 +184,10 @@
 <!-- ============================
      SIDEBAR ADMIN KIRI
 ============================ -->
-<div class="sidebar-admin">
-    @include('components.sidebar.admin')
-</div>
 
+<x-nav-header></x-nav-header>
+<x-sidebar.admin></x-sidebar.admin>
+    
 <div class="container">
 
     <!-- ============================
@@ -210,9 +210,9 @@
         </div>
 
         <div class="question-box">
-            <h3>Berikut merupakan contoh soal matematika ilmu yang menyenangkan 
+            <h5>Berikut merupakan contoh soal matematika ilmu yang menyenangkan 
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do 
-                eiusmod tempor incididunt ut .</h3>
+                eiusmod tempor incididunt ut .</h5>
 
             <input type="radio" name="answer"> Jawaban A <br>
             <input type="radio" name="answer"> Jawaban B <br>
