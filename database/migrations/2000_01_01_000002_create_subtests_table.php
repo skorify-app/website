@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('subtests', function (Blueprint $table) {
             $table->smallIncrements('subtest_id')->primary();
             $table->string('subtest_name', 20);
-            $table->string('subtest_image_name', 20);
+            $table->string('subtest_image_name', 20)->nullable();
         });
     }
 

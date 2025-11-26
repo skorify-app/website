@@ -21,7 +21,7 @@
     };
 
     // Simpan subtest (nama + file)
-   document.getElementById("saveSubtest").onclick = async function (e) {
+   /*document.getElementById("saveSubtest").onclick = async function (e) {
   e.preventDefault();
 
   const name = document.getElementById("subtestName").value.trim();
@@ -92,7 +92,7 @@
       text: "Coba ulangi beberapa saat lagi.",
     });
   }
-};
+};*/
 
 // Hapus subtest pakai SweetAlert2
 document.addEventListener("click", function (e) {
