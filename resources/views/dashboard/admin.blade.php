@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Admin Dashboard</title>
+    <title>Dasbor Admin</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.carousel.min.css') }}">
@@ -33,110 +33,12 @@
 ********************-->
 
 <div id="main-wrapper">
-    <!--**********************************
-        Nav header start
-    ***********************************-->
-    <div class="nav-header" style="background-color: #001D39;">
-        <a href="{{ @route('dashboard') }}" class="brand-logo">
-            <img class="logo-abbr" src="{{ asset('images/skorify-logo.png') }}" width="400" alt="">
-            <img class="logo-compact" src="{{ asset('images/skorify-logo.png') }}" alt="">
-            <img class="brand-title" src="{{ asset('images/skorify-text.png') }}" alt="">
-        </a>
+    <x-nav-header></x-nav-header>
 
-        <div class="nav-control">
-            <div class="hamburger">
-                <span style="background-color: #001D39;" class="line"></span>
-                <span style="background-color: #001D39;" class="line"></span>
-                <span style="background-color: #001D39;" class="line"></span>
-            </div>
-        </div>
-    </div>
-    <!--**********************************
-        Nav header end
-    ***********************************-->
+    <x-header></x-header>
 
-    <!--**********************************
-        Header start
-    ***********************************-->
-    <div class="header">
-        <div class="header-content">
-            <nav class="navbar navbar-expand">
-                <div class="collapse navbar-collapse justify-content-between">
-                    <div class="header-left">
-                        <div class="search_bar dropdown">
-                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
-                                    <i class="mdi mdi-magnify"></i>
-                                </span>
-                            <div class="dropdown-menu p-0 m-0">
-                                <form>
-                                    <input class="form-control" type="search" placeholder="Cari" aria-label="Search">
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <ul class="navbar-nav header-right">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                                <i class="mdi mdi-bell"></i>
-                                <div class="pulse-css"></div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <h6 class="dropdown-header">Notifikasi</h6>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
-                                    <div class="d-flex align-items-center">
-                                        <div class="notification-box bg-light-primary">
-                                            <i class="mdi mdi-account text-primary"></i>
-                                        </div>
-                                        <div class="ml-3">
-                                            <p class="mb-0"><strong>Juan</strong> menambahkan <strong>subtes</strong> matematika.</p>
-                                            <small class="text-muted">3:20 WIB</small>
-                                        </div>
-                                    </div>
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-center" href="#">Lihat Semua Notifikasi</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                                <i class="mdi mdi-account"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <h6 class="dropdown-header">Hello, Admin!</h6>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
-                                    <i class="mdi mdi-account mr-2"></i>
-                                    Profil
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="mdi mdi-email mr-2"></i>
-                                    Kotak Masuk
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
-                                    <i class="mdi mdi-logout mr-2"></i>
-                                    Keluar
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </div>
-    <!--**********************************
-        Header end
-    ***********************************-->
-
-    <!--**********************************
-        Sidebar start (from Staff index)
-    ***********************************-->
     <x-sidebar.admin></x-sidebar.admin>
-    <!--**********************************
-        Sidebar end
-    ***********************************-->
+
 
     <!--**********************************
         Content body start
@@ -146,7 +48,7 @@
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <h4 class="text-dark mb-4">Dashboard</h4>
+                    <h4 class="text-dark mb-4">Dasbor</h4>
                 </div>
             </div>
 
@@ -155,41 +57,25 @@
                 <div class="col-12">
                     <h5 class="mb-3">Jumlah akun</h5>
                     <div class="d-flex flex-wrap gap-3">
-                        <div class="card p-3" style="min-width:220px;">
-                            <div class="d-flex align-items-center">
-                                <div class="p-3 bg-light rounded mr-3" style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
-                                    <i class="mdi mdi-account" style="font-size:26px;color:#2563eb"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted">Staff</div>
-                                    <div class="h5">{{ $staffCount ?? 0 }}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card p-3" style="min-width:220px;">
-                            <div class="d-flex align-items-center">
-                                <div class="p-3 bg-light rounded mr-3" style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
-                                    <i class="mdi mdi-account-multiple" style="font-size:26px;color:#2563eb"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted">Peserta</div>
-                                    <div class="h5">{{ $pesertaCount ?? 0 }}</div>
+                        @foreach ($total_acc as $summary)
+                            <div class="card p-3" style="min-width:220px;">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-3 bg-light rounded mr-3" style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
+                                        @if ($summary->role == 'STAFF')
+                                            <i class="mdi mdi-account" style="font-size:26px;color:#2563eb"></i>
+                                        @elseif ($summary->role == 'PARTICIPANT')
+                                            <i class="mdi mdi-account-multiple" style="font-size:26px;color:#2563eb"></i>
+                                        @elseif ($summary->role == 'ADMIN')
+                                            <i class="mdi mdi-account-key" style="font-size:26px;color:#2563eb"></i>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="text-muted">{{ ucfirst(strtolower($summary->role)) }}</div>
+                                        <div class="h5">{{ $summary->total }}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card p-3" style="min-width:220px;">
-                            <div class="d-flex align-items-center">
-                                <div class="p-3 bg-light rounded mr-3" style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
-                                    <i class="mdi mdi-account-key" style="font-size:26px;color:#2563eb"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted">Admin</div>
-                                    <div class="h5">{{ $adminCount ?? 0 }}</div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

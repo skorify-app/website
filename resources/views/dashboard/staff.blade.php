@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Staff Dashboard </title>
+    <title>Dasbor Staff</title>
 
     <link rel="icon" type="image/x-icon" sizes="96x96" href="{{ asset('images/skorify-logo.ico') }}">
     <link href="{{ @asset('./vendor/jqvmap/css/jqvmap.min.css') }}" rel="stylesheet">
