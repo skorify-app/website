@@ -35,6 +35,15 @@ Route::middleware('authCheck')->group(function () {
     });
 });
 
+// Pengerjaan Soal (Staff)
+ Route::get('/staff/pengerjaan', function () {
+    return view('Staff.pengerjaan');
+});
+
+// Pengerjaan Soal (Admin)
+Route::get('/admin/pengerjaan', function () {
+    return view('Admin.pengerjaan');
+})->name('admin.pengerjaan');
 
 
 // Staff Routes
