@@ -61,7 +61,7 @@
                 <x-error-card message="{{ session('success') }}"></x-error-card>
             @endif
 
-            <h2>Subtes Ujian Mandiri Polibatam (UMPB)</h2>
+            <x-page-title title="Subtes Ujian Mandiri Polibatam (UMPB)"></x-page-title>
 
             <div class="top-bar">
                 <input type="text" id="search" placeholder="Cari disini">
