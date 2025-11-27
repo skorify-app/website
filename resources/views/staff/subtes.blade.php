@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Staff Dashboard </title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('images/skorify-logo.png') }}">
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="./css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
@@ -261,19 +261,21 @@
       <span class="close-btn" id="closeModal">&times;</span>
       <h3>Tambahkan Subtest</h3>
 
-      <label>Nama Subtest</label>
-      <input type="text" id="subtestName" placeholder="Masukkan nama subtest" />
+      {{-- Form --}}
+      <form id="subtestForm" action="/upload" method="POST" enctype="multipart/form-data">
+      @csrf
+      <label>Nama Subtes</label>
+      <input type="text" id="subtestName" name="nama_subtes" placeholder="Masukkan nama subtes" />
 
-      <label>Upload Soal Subtest (Excel)</label>
-      <input type="file" id="subtestFile" accept=".xlsx, .xls" />
+      <label>Upload Soal Subtes (Excel)</label>
+      <input type="file" id="subtestFile" name="file_soal" accept=".xlsx, .xls, .xltx, .xlt" />
 
-      <button id="saveSubtest">Simpan</button>
+      <button type="submit" id="saveSubtest">Simpan</button>
+      </form>
     </div>
   </div>
 
-<script>
-  
-</script>
+
                
                
 
