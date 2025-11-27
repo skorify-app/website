@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Account;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -28,42 +29,28 @@ class LoginController extends Controller
             ->withInput($request->only('email'));
     }
 
-    public function login(Request $request)
+    public function login(Request $request): Redirector|RedirectResponse
     {
         $request->validate([
-            "email"=> "required|email",
-            "password"=> "required",
-            "role"=>"required"
+            "email"=> 'required|email|min:7|max:63',
+            "password"=> 'required|min:3|max:63'
         ]);
-        // Samakan role input dengan huruf besar
-        $role = strtoupper($request->role);
 
-        //Ambil User berdasarkan email dan role
-        $user = Account::where("email", $request->email)
-        ->where("role", $role)
-        ->first();
+        $user = Account::where("email", $request->input('email'))->first();
 
         if (!$user) {
             return back()->with('error', 'Email atau role salah');
         }
 
-        if(!hash::check($request->password, $user->password)){
-            return back()->with('error', 'Password salah');
+        if ($user->role === 'PARTICIPANT') {
+            return back()->with('error', 'Maaf, hanya admin dan staf yang dapat masuk akun melalui situs ini');
         }
 
-        // Simpan session (login berhasil)
-        session([
-            'user_id' => $user->account_id,
-            'user_name' => $user->full_name,
-            'user_role' => $user->role,
-        ]);
+        if(!hash::check($request->input('password'), $user->password)){
+            return back()->with('error', 'Password Anda salah, coba lagi');
+        }
 
-        return redirect('/dashboard');
-    }
-
-    public function logout()
-    {
-        session()->flush();
-        return redirect('/page-login');
+        $request->session()->regenerate();
+        return redirect()->route('dashboard');
     }
 }
