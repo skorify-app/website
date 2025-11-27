@@ -83,12 +83,6 @@
 
   <div class="content-body">
             <div class="container">
-              @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-              @endif
-              @if(session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-              @endif
                 <div class="profile-card">
           <div class="avatar-circle">
             <img src="./images/avatar/avatar-1.jpeg" alt="avatar" class="avatar-img">
@@ -97,7 +91,7 @@
                         <div class="info-row" data-toggle="modal" data-target="#editNameModal" style="cursor:pointer;">
                             <div>
                                 <div class="info-label">Nama</div>
-                                <div class="info-value">{{ optional(auth()->user())->name ?? '—' }}</div>
+                                <div class="info-value">Hikari Immanuel blarblar</div>
                             </div>
                             <div class="edit-arrow"><i class="bi bi-chevron-right"></i></div>
                         </div>
@@ -105,7 +99,7 @@
                         <div class="info-row" data-toggle="modal" data-target="#editEmailModal" style="cursor:pointer;">
                             <div>
                                 <div class="info-label">Email</div>
-                                <div class="info-value">{{ optional(auth()->user())->email ?? '—' }}</div>
+                                <div class="info-value">Hikarimanuel@gmail.com</div>
                             </div>
                             <div class="edit-arrow"><i class="bi bi-chevron-right"></i></div>
                         </div>
