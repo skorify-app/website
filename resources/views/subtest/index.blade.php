@@ -9,7 +9,7 @@
 
     <title>Kelola Subtes</title>
 
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/skorify-logo.ico') }}">
     <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.theme.default.min.css') }}">
     <link href="{{ asset('vendor/jqvmap/css/jqvmap.min.css') }}" rel="stylesheet">
@@ -66,7 +66,7 @@
             <div class="top-bar">
                 <input type="text" id="search" placeholder="Cari disini">
                 <div>
-                    <button id="downloadTemplate">Unduh Template</button>
+                    <button id="downloadTemplate">Unduh Kerangka</button>
                     <button id="create-subtest">Tambah Subtes</button>
                 </div>
             </div>
@@ -83,9 +83,9 @@
                     <tr data-subtest-id="{{ $subtest['subtest_id'] }}">
                         <td>{{ $subtest['subtest_name'] }}</td>
                         <td class="actions">
-                            <button class="btn-delete bi bi-trash">Hapus</button>
-                            <button class="btn-edit bi bi-pencil-square">Edit</button>
-                            <button class="btn-add bi bi-eye">Lihat</button>
+                            <button class="btn-delete bi bi-trash"></button>
+                            <button class="btn-edit bi bi-pencil-square"></button>
+                            <button class="btn-add bi bi-eye"></button>
                         </td>
                     </tr>
                 @empty

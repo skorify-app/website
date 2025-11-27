@@ -8,14 +8,9 @@
                 </a>
             </li>
             <li>
-                <a href="#" aria-expanded="false">
+                <a href="/subtest" aria-expanded="false">
                     <i class="bi bi-book mt-1"></i>
                     <span class="nav-text">Subtes</span>
-                </a>
-            </li>
-            <li><a href="#" aria-expanded="false">
-                    <i class="bi bi-person mt-1"></i>
-                    <span class="nav-text">Peserta</span>
                 </a>
             </li>
             <li>
