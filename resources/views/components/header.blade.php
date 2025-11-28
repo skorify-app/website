@@ -89,7 +89,7 @@
                                         <i class="icon-envelope-open"></i>
                                         <span class="ml-2">Kotak Masuk </span>
                                     </a>
-                                    <a href="{{ url('/logout') }}" class="dropdown-item">
+                                    <a href="{{ route('logout') }}" class="dropdown-item">
                                         <i class="icon-key"></i>
                                         <span class="ml-2">Keluar </span>
                                     </a>
