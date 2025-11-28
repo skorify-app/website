@@ -8,7 +8,7 @@
 
         <title>Kelola Subtes</title>
 
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/skorify-logo.ico') }}">
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
         <link href="{{ asset('css/dropdown.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ @asset('css/bootstrap-icons.min.css') }}">
@@ -82,9 +82,9 @@
                                 </td>
                                 <td>{{ $subtest['subtest_name'] }}</td>
                                 <td class="actions">
-                                    <button class="btn-delete bi bi-trash">Hapus</button>
-                                    <button class="btn-edit bi bi-pencil-square">Edit</button>
-                                    <button class="btn-add bi bi-eye">Lihat</button>
+                                    <button class="btn-delete bi bi-trash"></button>
+                                    <button class="btn-edit bi bi-pencil-square"></button>
+                                    <button class="btn-add bi bi-eye"></button>
                                 </td>
                             </tr>
                         @empty

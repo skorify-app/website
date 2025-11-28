@@ -73,93 +73,17 @@
 
     <div id="main-wrapper">
 
-     <div class="nav-header" style="background-color: #001D39;">
-            <a href="index.html" class="brand-logo">
-                <img class="logo-abbr" src="./images/skorify-logo.png" width="400" alt="">
-                <img class="logo-compact" src="./images/skorify-logo.png" alt="">
-                <img class="brand-title" src="./images/skorify-text.png" alt="">
-            </a>
+     <x-nav-header></x-nav-header>
 
-            <div class="nav-control">
-                <div class="hamburger" >
-                    <span style="background-color: #001D39;" class="line"></span><span style="background-color: #001D39;" class="line"></span><span style="background-color: #001D39;" class="line"></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="header">
-          <div class="header-content">
-            <nav class="navbar navbar-expand">
-              <div class="collapse navbar-collapse justify-content-between">
-                <div class="header-left">
-                  <div class="search_bar dropdown">
-                    <span class="search_icon p-3 c-pointer" data-toggle="dropdown" data-bs-toggle="dropdown">
-                      <i class="mdi mdi-magnify"></i>
-                    </span>
-                    <div class="dropdown-menu p-0 m-0">
-                      <form>
-                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                      </form>
-                    </div>
-                  </div>
-                </div>
-
-                 <ul class="navbar-nav header-right">
-                            <li class="nav-item dropdown header-profile">
-                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
-                                    <i class="mdi mdi-account"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a href="{{ url('/profile') }}" class="dropdown-item">
-                                        <i class="icon-user"></i>
-                                        <span class="ml-2">Profil</span>
-                                    </a>
-                                    <a href="./email-inbox.html" class="dropdown-item">
-                                        <i class="icon-envelope-open"></i>
-                                        <span class="ml-2">Kotak Masuk </span>
-                                    </a>
-                                    <a href="{{ url('/logout') }}" class="dropdown-item">
-                                        <i class="icon-key"></i>
-                                        <span class="ml-2">Keluar </span>
-                                    </a>
-                                </div>
-                            </li>
-                </ul>
-              </div>
-            </nav>
-          </div>
-        </div>
+        <x-header></x-header>
 
     <!--**********************************
       Sidebar start (same as Beranda)
     ***********************************-->
-    <div class="quixnav  ">
-      <div class="quixnav-scroll  " style="width: 100%;overflow-x: hidden !important;">
-        <!-- brand header removed per request (logo/name moved to top navbar) -->
-        <ul class="metismenu" id="menu" >
-                   
-          <li><a  href="{{ url('/index') }}" aria-expanded="false"><i
-                class="bi bi-house mt-1"></i><span class="nav-text">Beranda</span></a>
-                       
-          </li>
-          <li><a href="javascript:void()" aria-expanded="false"><i
-                class="bi bi-book mt-1"></i><span class="nav-text">Subtes</span></a>
-                        
-          </li>
-          <li><a  href="javascript:void()" aria-expanded="false"><i
-                class="bi bi-person mt-1"></i><span class="nav-text">Peserta</span></a>
-                        
-          </li>
-          <li><a  href="{{ url('/profile') }}" aria-expanded="false"><i
-                class="bi bi-gear mt-1   "></i><span class="nav-text ">Pengaturan Akun</span></a>
-                        
-          </li>
-
-        </ul>
-      </div>
-
-
-    </div>
+   <x-sidebar.staff></x-sidebar.staff>
+    <!--**********************************
+        Sidebar end
+    ***********************************-->
 
   <div class="content-body">
             <div class="container">
