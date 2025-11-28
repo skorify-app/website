@@ -59,15 +59,5 @@ Route::get('/profile', function () {
     return view('Staff.profile');
 });
 
-// Simple logout route: clear session and redirect to login/main page
-Route::get('/logout', function () {
-    // If Auth is available, attempt logout; otherwise flush session
-    if (class_exists(\Illuminate\Support\Facades\Auth::class)) {
-        \Illuminate\Support\Facades\Auth::logout();
-    }
-    session()->flush();
-    return redirect('/');
-});
-
 // Subtes Routes
 // Route::resource('subtes', SubtesController::class);
