@@ -83,7 +83,7 @@ async function editSubtest() {
                 case 404:
                     message = 'Maaf, subtes ini tidak terdaftar atau sudah dihapus.';
                     break;
-                case 403:
+                case 400:
                     message = 'Maaf, subtes dengan nama ini sudah terdaftar.';
                     break;
                 case 500:
