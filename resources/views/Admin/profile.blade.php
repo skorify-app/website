@@ -78,7 +78,7 @@
 
     <x-header></x-header>
 
-    <x-sidebar.staff></x-sidebar.staff>
+    <x-sidebar.admin></x-sidebar.admin>
 
   <div class="content-body">
             <div class="container">
@@ -138,7 +138,7 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ route('staff.profile.name') }}">
+            <form method="POST" action="{{ route('admin.profile.name') }}">
               @csrf
               <div class="form-group">
                 <input type="text" class="form-control" name="full_name" value="{{ Auth::user()->full_name }}" required>
@@ -159,7 +159,7 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ route('staff.profile.email') }}">
+            <form method="POST" action="{{ route('admin.profile.email') }}">
               @csrf
               <div class="form-group">
                 <input type="email" class="form-control" name="email" value="{{ Auth::user()->email }}" required>
@@ -180,7 +180,7 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ route('staff.profile.password') }}">
+            <form method="POST" action="{{ route('admin.profile.password') }}">
               @csrf
               <div class="form-group">
                 <input type="password" class="form-control" name="current_password" placeholder="Kata sandi lama" required minlength="8">
@@ -331,4 +331,3 @@
 </body>
 
 </html>
-  
