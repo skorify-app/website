@@ -83,11 +83,7 @@
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a href="{{ url('/profile') }}" class="dropdown-item">
                                         <i class="icon-user"></i>
-                                        <span class="ml-2">Profil</span>
-                                    </a>
-                                    <a href="./email-inbox.html" class="dropdown-item">
-                                        <i class="icon-envelope-open"></i>
-                                        <span class="ml-2">Kotak Masuk </span>
+                                        <span class="ml-2">Pengaturan</span>
                                     </a>
                                     <a href="{{ route('logout') }}" class="dropdown-item">
                                         <i class="icon-key"></i>
