@@ -57,7 +57,36 @@ Route::get('/subtes', function () {
 // Profile page for staff
 Route::get('/profile', function () {
     return view('Staff.profile');
-});
+})->middleware('auth');
+
+// Profile page for admin
+Route::get('/admin/profile', function () {
+    return view('Admin.profile');
+})->middleware('auth');
+
+// Profile update routes (Staff)
+use App\Http\Controllers\Staff\ProfileController;
+
+Route::post('/staff/profile/name', [ProfileController::class, 'updateName'])
+    ->name('staff.profile.name')->middleware('auth');
+
+Route::post('/staff/profile/email', [ProfileController::class, 'updateEmail'])
+    ->name('staff.profile.email')->middleware('auth');
+
+Route::post('/staff/profile/password', [ProfileController::class, 'updatePassword'])
+    ->name('staff.profile.password')->middleware('auth');
+
+// Profile update routes (Admin)
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+
+Route::post('/admin/profile/name', [AdminProfileController::class, 'updateName'])
+    ->name('admin.profile.name')->middleware('auth');
+
+Route::post('/admin/profile/email', [AdminProfileController::class, 'updateEmail'])
+    ->name('admin.profile.email')->middleware('auth');
+
+Route::post('/admin/profile/password', [AdminProfileController::class, 'updatePassword'])
+    ->name('admin.profile.password')->middleware('auth');
 
 // Subtes Routes
 // Route::resource('subtes', SubtesController::class);

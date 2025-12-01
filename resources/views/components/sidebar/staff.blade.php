@@ -14,7 +14,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" aria-expanded="false">
+                <a href="/profile" aria-expanded="false">
                     <i class="bi bi-gear mt-1"></i>
                     <span class="nav-text ">Pengaturan Akun</span>
                 </a>
