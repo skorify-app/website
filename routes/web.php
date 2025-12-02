@@ -4,68 +4,55 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\SubtestController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
-
 
 # Main page
 Route::get('/', [IndexController::class, 'index'])->name('index');
 
-# Log in routes
+# Login
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 
-# Log out route
-Route::get('/logout', [LogoutController::class, 'destroy'])->name('logout');
+# Logout (POST)
+Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
 # Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard')->middleware('auth');
 
+# Subtest
+Route::get('/subtest', [SubtestController::class, 'index'])
+    ->name('subtest.index')->middleware('auth');
 
-Route::get('/staff/dashboard', function() {
-    return "Welcome Staff!";
-})->middleware('auth');
+Route::post('/subtest', [SubtestController::class, 'store'])
+    ->name('subtest.store')->middleware('auth');
 
-Route::middleware('authCheck')->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('Admin.dasboard');
-    });
+Route::delete('/subtest/{subtest_id}', [SubtestController::class, 'delete'])
+    ->name('subtest.delete')->middleware('auth');
 
-    Route::get('/staff/dashboard', function () {
-        return view('staff.index');
-    });
-});
+Route::post('/subtest/update', [SubtestController::class, 'update'])
+    ->name('subtest.update')->middleware('auth');
 
+# Profile Page
+Route::get('/profile', [ProfileController::class, 'index'])
+    ->name('profile')->middleware('auth');
 
+# Profile Updates (AJAX)
+Route::post('/profile/update-name', [ProfileController::class, 'updateName'])
+    ->middleware('auth');
 
-// Staff Routes
-Route::get('/index', function () {
-    return view('staff.index');
-});
+Route::post('/profile/update-email', [ProfileController::class, 'updateEmail'])
+    ->middleware('auth');
 
-Route::get('/subtes', function () {
-    return view('staff.subtes');
-});
+Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])
+    ->middleware('auth');
 
+# Staff & Admin Views
+Route::get('/staff/pengerjaan', fn() => view('Staff.pengerjaan'));
+Route::get('/admin/pengerjaan', fn() => view('Admin.pengerjaan'))
+    ->name('admin.pengerjaan');
 
-// Profile page for staff
-Route::get('/profile', function () {
-    return view('Staff.profile');
-});
+Route::get('/admin/tambahadmin', fn() => view('Admin.tambahadmin'));
 
-// Simple logout route: clear session and redirect to login/main page
-Route::get('/logout', function () {
-    // If Auth is available, attempt logout; otherwise flush session
-    if (class_exists(\Illuminate\Support\Facades\Auth::class)) {
-        \Illuminate\Support\Facades\Auth::logout();
-    }
-    session()->flush();
-    return redirect('/');
-});
-
-// Admin Routes
-Route::get('/admin/tambahadmin', function () {
-    return view('Admin.tambahadmin');
-});
-
-// Subtes Routes
-// Route::resource('subtes', SubtesController::class);
+Route::get('/subtes', fn() => view('staff.subtes'));
