@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Dasbor Admin</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/skorify-logo.ico') }}">
     <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.theme.default.min.css') }}">
     <link href="{{ asset('vendor/jqvmap/css/jqvmap.min.css') }}" rel="stylesheet">
@@ -107,7 +107,7 @@
             <!-- Action Cards (wide) -->
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <a href="#" class="text-decoration-none">
+                    <a href="/subtest" class="text-decoration-none">
                         <div class="card p-3 action-card kelola-subtest">
                             <div class="d-flex align-items-center">
                                 <div class="action-icon" style="font-size:28px;">
@@ -139,7 +139,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <a href="#" class="text-decoration-none">
+                    <a href="/profile" class="text-decoration-none">
                         <div class="card p-3 action-card pengaturan">
                             <div class="d-flex align-items-center">
                                 <div class="action-icon" style="font-size:28px;">
