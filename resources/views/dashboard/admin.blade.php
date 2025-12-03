@@ -106,53 +106,29 @@
 
             <!-- Action Cards (wide) -->
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <a href="/subtest" class="text-decoration-none">
-                        <div class="card p-3 action-card kelola-subtest">
-                            <div class="d-flex align-items-center">
-                                <div class="action-icon" style="font-size:28px;">
-                                    <i class="mdi mdi-clipboard-text" style="font-size:28px;color:#001D39"></i>
-                                </div>
-                                <div class="action-info ml-3">
-                                    <h6 class="mb-1">Kelola Subtest</h6>
-                                    <p class="small mb-0 text-muted">Tambah, edit atau hapus subtest</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                <x-bottom-nav
+                    title="Kelola Subtes"
+                    link="/subtest"
+                    icon="mdi-clipboard-text"
+                    icon-color="#001D39"
+                    description="Tambah, edit atau hapus subtest"
+                ></x-bottom-nav>
 
-                <div class="col-md-4 mb-3">
-                    <a href="#" class="text-decoration-none">
-                        <div class="card p-3 action-card kelola-akun">
-                            <div class="d-flex align-items-center">
-                                <div class="action-icon" style="font-size:28px;">
-                                    <i class="mdi mdi-account-cog" style="font-size:28px;color:#10b981"></i>
-                                </div>
-                                <div class="action-info ml-3">
-                                    <h6 class="mb-1">Kelola Akun</h6>
-                                    <p class="small mb-0 text-muted">Lihat daftar akun dan kelola</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <a href="/profile" class="text-decoration-none">
-                        <div class="card p-3 action-card pengaturan">
-                            <div class="d-flex align-items-center">
-                                <div class="action-icon" style="font-size:28px;">
-                                    <i class="mdi mdi-cog-outline" style="font-size:28px;color:#f59e0b"></i>
-                                </div>
-                                <div class="action-info ml-3">
-                                    <h6 class="mb-1">Pengaturan</h6>
-                                    <p class="small mb-0 text-muted">Ubah profile dan kata sandi</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                <x-bottom-nav
+                    title="Kelola Akun"
+                    link="/subtest"
+                    icon="mdi-account-cog"
+                    iconColor="#10b981"
+                    description="Tambah, edit atau hapus subtest"
+                ></x-bottom-nav> 
+                
+                <x-bottom-nav
+                    title="Pengaturan"
+                    link="/profile"
+                    icon="mdi-cog-outline"
+                    iconColor="#f59e0b"
+                    description="Tambah, edit atau hapus subtest"
+                ></x-bottom-nav>   
             </div>
 
         </div>
