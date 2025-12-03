@@ -45,5 +45,13 @@ Route::get('/admin/tambahadmin', function () {
     return view('Admin.tambahadmin');
 });
 
+Route::get('/admin/previewsubtest', function () {
+    return view('Admin.previewsubtest');
+});
+
+Route::get('/admin/previewumpb', function () {
+    return view('Admin.previewumpb');
+});
+
 // Subtes Routes
 // Route::resource('subtes', SubtesController::class);

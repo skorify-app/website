@@ -134,7 +134,7 @@
     .btn-next { background: #4c8bff; color: white; }
 
     /* ============================
-       SIDEBAR KANAN (DAFTAR SOAL)
+       NAVIGASI DAFTAR SOAL        |
     ============================ */
     .sidebar {
         width: 260px;
