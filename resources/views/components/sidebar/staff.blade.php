@@ -1,27 +1,16 @@
-<div class="quixnav  ">
-    <div class="quixnav-scroll  " style="width: 100%;">
-        <ul class="metismenu" id="menu" >
+<div class="quixnav">
+    <div class="quixnav-scroll">
+        <ul class="metismenu" id="menu">
             <li>
                 <a href="{{ @route('dashboard') }}" aria-expanded="false">
-                    <i class="bi bi-house mt-1"></i>
+                    <i class="mdi mdi-home"></i>
                     <span class="nav-text">Beranda</span>
                 </a>
             </li>
             <li>
-                <a href="#" aria-expanded="false">
-                    <i class="bi bi-book mt-1"></i>
-                    <span class="nav-text">Subtes</span>
-                </a>
-            </li>
-            <li><a href="#" aria-expanded="false">
-                    <i class="bi bi-person mt-1"></i>
-                    <span class="nav-text">Peserta</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" aria-expanded="false">
-                    <i class="bi bi-gear mt-1"></i>
-                    <span class="nav-text ">Pengaturan Akun</span>
+                <a href="{{ @route('subtest.index') }}" aria-expanded="false">
+                    <i class="mdi mdi-book-open-page-variant"></i>
+                    <span class="nav-text">Kelola Subtes</span>
                 </a>
             </li>
         </ul>
