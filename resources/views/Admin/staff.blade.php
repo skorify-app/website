@@ -6,12 +6,48 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Kelola Subtes</title>
+        <title>Kelola Staff</title>
         <link rel="icon" type="image/x-icon" sizes="96x96" href="{{ asset('images/skorify-logo.ico') }}">
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
         <link href="{{ asset('css/dropdown.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ @asset('css/bootstrap-icons.min.css') }}">
         <style>
+            /* Center modal on screen */
+            .modal-subtes {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal-subtes.show {
+                display: flex;
+            }
+
+            .modal-contentSubtes {
+                background-color: #fefefe;
+                margin: 0 auto;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                max-width: 500px;
+                width: 90%;
+            }
+
+            .modal-contentSubtes input[type="email"],
+            .modal-contentSubtes input[type="password"],
+             .modal-contentSubtes input[type="text"] {
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+            }
             .modal-contentSubtes label {
                margin-bottom: 0; 
             }
@@ -32,11 +68,7 @@
 
             <x-header></x-header>
 
-            @if($role == "ADMIN")
-                <x-sidebar.admin></x-sidebar.admin>
-            @else
-                <x-sidebar.staff></x-sidebar.staff>
-            @endif
+            <x-sidebar.admin></x-sidebar.admin>
 
             <div class="content-body">
                 <!-- row -->
@@ -49,46 +81,35 @@
                         <x-error-card message="{{ session('success') }}"></x-error-card>
                     @endif
 
-                    <x-page-title title="Subtes Ujian Mandiri Polibatam (UMPB)"></x-page-title>
+                    <x-page-title title="Kelola Staff"></x-page-title>
 
                     <div class="top-bar">
                         <input type="text" id="search" placeholder="Cari disini">
                         <div>
-                            <a href="{{ @asset('Templat_Soal_Subtes.xltx') }}" download class="btn">
-                                <button>Unduh Templat</button>
-                            </a>
-                            <button id="create-subtest">Tambah Subtes</button>
+                            <button id="create-staff">Tambah Staff</button>
                         </div>
                     </div>
 
-                    <table id="subtests-table">
+                    <table id="staff-table">
                         <thead>
                             <tr>
-                                <th style="border-top-left-radius:10px;">Ikon</th>
-                                <th>Nama</th>
+                                <th style="border-top-left-radius:10px;">Nama Lengkap</th>
+                                <th>Email</th>
                                 <th style="width: 50%;border-top-right-radius:10px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                        @forelse ($subtests as $subtest)
+                        @forelse ($staffs as $staff)
                             <tr
-                                data-subtest-id="{{ $subtest['subtest_id'] }}"
-                                data-subtest-name="{{ $subtest['subtest_name'] }}"
+                                data-staff-id="{{ $staff->account_id }}"
+                                data-staff-name="{{ $staff->full_name }}"
+                                data-staff-email="{{ $staff->email }}"
                             >
-                                <td>
-                                    @if($subtest['subtest_image_name'])
-                                        <img
-                                            src="/images/subtest/{{ $subtest['subtest_image_name'] }}"
-                                            alt="Ikon subtes {{ $subtest['subtest_image_name'] }}"
-                                            style="height: 64px;"
-                                        >
-                                    @endif
-                                </td>
-                                <td>{{ $subtest['subtest_name'] }}</td>
+                                <td>{{ $staff->full_name }}</td>
+                                <td>{{ $staff->email }}</td>
                                 <td class="actions">
                                     <button class="btn-delete bi bi-trash"></button>
                                     <button class="btn-edit bi bi-pencil-square"></button>
-                                    <button class="btn-add bi bi-eye"></button>
                                 </td>
                             </tr>
                         @empty
@@ -96,8 +117,8 @@
                         </tbody>
                     </table>
 
-                    <x-create-subtest-modal></x-create-subtest-modal>
-                    <x-edit-subtest-modal></x-edit-subtest-modal>
+                    <x-create-staff-modal></x-create-staff-modal>
+                    <x-edit-staff-modal></x-edit-staff-modal>
                 </div>
             </div>
 
@@ -108,7 +129,7 @@
             </div>
         </div>
 
-        <script src="{{ @asset('js/subtest.js') }}"></script>
+        <script src="{{ @asset('js/staff.js') }}"></script>
         <script src="{{ @asset('js/sweetalert2.js') }}"></script>
 
         <script src="{{asset('vendor/global/global.min.js')}}"></script>

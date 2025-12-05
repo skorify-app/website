@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" aria-expanded="false">
+                <a href="/tambah-staff" aria-expanded="false">
                     <i class="mdi mdi-account-group"></i>
                     <span class="nav-text">Kelola Akun</span>
                 </a>

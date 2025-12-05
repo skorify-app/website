@@ -5,7 +5,9 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\SubtestController;
+use App\Models\Account;
 use Illuminate\Support\Facades\Route;
 
 
@@ -60,6 +62,22 @@ Route::get('/profile', [ProfileController::class, 'index'])
 
 Route::post('/profile', [ProfileController::class, 'update'])
     ->name('profile.update')->middleware('auth');
+
+// Admin: staff management
+Route::get('/tambah-staff', [AdminStaffController::class, 'index'])
+    ->name('admin.tambah-staff')->middleware('auth');
+
+Route::post('/tambah-staff', [AdminStaffController::class, 'store'])
+    ->name('admin.staff.store')->middleware('auth');
+
+Route::put('/staff/{staff_id}', [AdminStaffController::class, 'update'])
+    ->name('admin.staff.update')->middleware('auth');
+
+Route::post('/staff/{staff_id}', [AdminStaffController::class, 'update'])
+    ->name('admin.staff.update.post')->middleware('auth');
+
+Route::delete('/staff/{staff_id}', [AdminStaffController::class, 'destroy'])
+    ->name('admin.staff.destroy')->middleware('auth');
 
 
 // Subtes Routes
