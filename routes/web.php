@@ -65,12 +65,12 @@ Route::post('/profile', [ProfileController::class, 'update'])
 
 // Admin: staff management
 Route::get('/tambah-staff', [AdminStaffController::class, 'index'])
-    ->name('admin.tambah-staff')->middleware('auth');
+    ->name('admin.staff')->middleware('auth');
 
 Route::post('/tambah-staff', [AdminStaffController::class, 'store'])
     ->name('admin.staff.store')->middleware('auth');
 
-Route::put('/staff/{staff_id}', [AdminStaffController::class, 'update'])
+Route::put('/tambah-staff/{staff_id}', [AdminStaffController::class, 'update'])
     ->name('admin.staff.update')->middleware('auth');
 
 Route::post('/staff/{staff_id}', [AdminStaffController::class, 'update'])
