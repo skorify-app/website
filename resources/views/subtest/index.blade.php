@@ -11,6 +11,11 @@
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
         <link href="{{ asset('css/dropdown.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ @asset('css/bootstrap-icons.min.css') }}">
+        <style>
+            .modal-contentSubtes label {
+               margin-bottom: 0; 
+            }
+        </style>
     </head>
 
     <body>

@@ -8,9 +8,9 @@
                 </a>
             </li>
             <li>
-                <a href="#" aria-expanded="false">
+                <a href="{{ @route('staff.index') }}" aria-expanded="false">
                     <i class="mdi mdi-account-group"></i>
-                    <span class="nav-text">Kelola Akun</span>
+                    <span class="nav-text">Kelola Staf</span>
                 </a>
             </li>
             <li>
