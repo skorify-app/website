@@ -1,4 +1,4 @@
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const createStaffBtn = document.getElementById('create-staff');
     const staffTable = document.getElementById('staff-table');
@@ -59,7 +59,7 @@
     // Render table
     function renderTable(staffsToShow = allStaffs) {
         staffTableBody.innerHTML = '';
-        
+
         if (staffsToShow.length === 0) {
             staffTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Tidak ada data staff</td></tr>';
             return;
@@ -132,12 +132,12 @@
     });
 
     // Open create modal
-    createStaffBtn.addEventListener('click', function() {
+    createStaffBtn.onclick = () => {
         document.querySelector('input[name="create-staff-name"]').value = '';
         document.querySelector('input[name="create-staff-email"]').value = '';
         document.querySelector('input[name="create-staff-password"]').value = '';
         showModal(createStaffModal);
-    });
+    }
 
     // Submit create staff
     submitCreateStaffBtn.addEventListener('click', async function() {
@@ -169,7 +169,7 @@
         formData.append('password', password);
 
         try {
-            const res = await fetch('/tambah-staff', {
+            const res = await fetch('/staff', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -233,7 +233,7 @@
         }
 
         const formData = new FormData();
-        formData.append('_method', 'PUT');
+        formData.append('account_id', staffId);
         formData.append('full_name', fullName);
         formData.append('email', email);
         if (password) {
@@ -241,7 +241,7 @@
         }
 
         try {
-            const res = await fetch(`/staff/${staffId}`, {
+            const res = await fetch('/staff/update', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken

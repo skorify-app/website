@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
@@ -38,6 +39,21 @@ Route::delete('/subtest/{subtest_id}', [SubtestController::class, 'delete'])
 Route::post('/subtest/update', [SubtestController::class, 'update'])
     ->name('subtest.update')->middleware('auth');
 
+# Manage staff accounts
+Route::get('/staff', [StaffController::class, 'index'])
+    ->name('staff.index')->middleware('auth');
+
+Route::post('/staff', [StaffController::class, 'store'])
+    ->name('staff.store')->middleware('auth');
+
+Route::post('/staff/update', [StaffController::class, 'update'])
+    ->name('staff.update')->middleware('auth');
+
+Route::delete('/staff/{staff_id}', [StaffController::class, 'destroy'])
+    ->name('staff.destroy')->middleware('auth');
+
+
+
 // Pengerjaan Soal (Staff)
  Route::get('/staff/pengerjaan', function () {
     return view('Staff.pengerjaan');
@@ -53,32 +69,11 @@ Route::get('/admin/tambahadmin', function () {
     return view('Admin.tambahadmin');
 });
 
-Route::get('/subtes', function () {
-    return view('staff.subtes');
-});
-
 Route::get('/profile', [ProfileController::class, 'index'])
     ->name('profile.index')->middleware('auth');
 
 Route::post('/profile', [ProfileController::class, 'update'])
     ->name('profile.update')->middleware('auth');
-
-// Admin: staff management
-Route::get('/tambah-staff', [AdminStaffController::class, 'index'])
-    ->name('admin.staff')->middleware('auth');
-
-Route::post('/tambah-staff', [AdminStaffController::class, 'store'])
-    ->name('admin.staff.store')->middleware('auth');
-
-Route::put('/tambah-staff/{staff_id}', [AdminStaffController::class, 'update'])
-    ->name('admin.staff.update')->middleware('auth');
-
-Route::post('/staff/{staff_id}', [AdminStaffController::class, 'update'])
-    ->name('admin.staff.update.post')->middleware('auth');
-
-Route::delete('/staff/{staff_id}', [AdminStaffController::class, 'destroy'])
-    ->name('admin.staff.destroy')->middleware('auth');
-
 
 // Subtes Routes
 // Route::resource('subtes', SubtesController::class);
