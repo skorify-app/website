@@ -95,7 +95,18 @@
 
                             <div class="text-right" style="min-width:180px;">
                                 <select class="form-control month-selector mb-2" style="width:160px;">
+                                    <option>Januari</option>
+                                    <option>Febuari</option>
+                                    <option>Maret</option>
+                                    <option>April</option>
+                                    <option>Mei</option>
+                                    <option>Juni</option>
+                                    <option>Juli</option>
                                     <option>Agustus</option>
+                                    <option>September</option>
+                                    <option>Oktober</option>
+                                    <option>November</option>
+                                    <option>Desember</option>
                                 </select>
                                 <div><a href="#" class="small text-muted" data-toggle="modal" data-target="#statisticsDetailModal">Lihat detail</a></div>
                             </div>
@@ -183,7 +194,18 @@
                     </div>
                     <div class="col-md-3 text-right">
                         <select id="modalMonthSelector" class="form-control">
+                            <option>Januari</option>
+                            <option>Febuari</option>
+                            <option>Maret</option>
+                            <option>April</option>
+                            <option>Mei</option>
+                            <option>Juni</option>
+                            <option>Juli</option>
                             <option>Agustus</option>
+                            <option>September</option>
+                            <option>Oktober</option>
+                            <option>November</option>
+                            <option>Desember</option>
                         </select>
                     </div>
                 </div>
