@@ -79,6 +79,9 @@ Route::post('/staff/{staff_id}', [AdminStaffController::class, 'update'])
 Route::delete('/staff/{staff_id}', [AdminStaffController::class, 'destroy'])
     ->name('admin.staff.destroy')->middleware('auth');
 
+Route::get('/pengerjaan', function () {
+    return view('Admin.pengerjaan');
+});
 
 // Subtes Routes
 // Route::resource('subtes', SubtesController::class);

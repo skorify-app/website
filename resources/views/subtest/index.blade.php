@@ -88,7 +88,7 @@
                                 <td class="actions">
                                     <button class="btn-delete bi bi-trash"></button>
                                     <button class="btn-edit bi bi-pencil-square"></button>
-                                    <button class="btn-add bi bi-eye"></button>
+                                   <a href="/pengerjaan"> <button class="btn-add bi bi-eye"></button></a>
                                 </td>
                             </tr>
                         @empty
