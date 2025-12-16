@@ -1,306 +1,512 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pengerjaan Soal</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<!-- Icon -->
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
-<link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.carousel.min.css') }}">
-<link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.theme.default.min.css') }}">
-<link href="{{ asset('vendor/jqvmap/css/jqvmap.min.css') }}" rel="stylesheet">
-<link href="{{ asset('css/style.css') }}" rel="stylesheet">
-<link href="{{ asset('css/dropdown.css') }}" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <title>Pengerjaan Soal</title>
+    <link rel="icon" href="{{ asset('images/skorify-logo.ico') }}">
 
-<style>
+    <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/owl-carousel/css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/jqvmap/css/jqvmap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.min.css') }}">
+
+    <style>
+    /* =========================
+    GLOBAL
+    ========================= */
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f5f6fa;
+        background: #f5f7fb;
+        color: #000;
     }
 
-    /* ============================
-       SIDEBAR ADMIN (PALING KIRI)
-    ============================ */
-    .sidebar-admin {
-        width: 250px;
-        background: #fff;
-        border-right: 1px solid #ddd;
-        height: 100vh;
-        position: fixed;
-        left: 0;
-        top: 0;
-        overflow-y: auto;
-        z-index: 999;
+    :root {
+        --dark-blue: #001D39;
+        --yellow: #ffc107;
+        --green: #198754;
     }
 
-    .quixnav {
-        padding-top: 20px;
+    /* =========================
+    TIMER
+    ========================= */
+    .time-hidden #timeBox {
+        display: none;
     }
 
-    .quixnav .nav-text {
-        font-size: 15px;
+    /* =========================
+    SOAL
+    ========================= */
+    .soal-text {
+        font-weight: 600;
+        color: #000;
     }
 
-    .quixnav a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 20px;
-        color: #333;
-        text-decoration: none;
+    .soal-wrapper {
+        transition: all 0.35s ease;
     }
 
-    .quixnav a:hover {
-        background: #f3f3f3;
-    }
-
-    /* ============================
-       LAYOUT UTAMA
-    ============================ */
-    .container {
-        display: flex;
-        height: 100vh;
-        padding-left: 250px; /* geser konten karena sidebar admin */
-    }
-
-    .content {
-        flex: 1;
-        padding: 20px 30px;
+    /* =========================
+    NAVIGASI KANAN
+    ========================= */
+    #navWrapper {
         position: relative;
+        transition: all 0.35s ease;
     }
 
-    .top-section {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .timer-box {
-        display: inline-block;
-        padding: 10px 18px;
+    .nav-box {
         background: #fff;
-        border-radius: 8px;
-        font-weight: bold;
-        border: 1px solid #ddd;
-    }
-
-    .hide-btn {
-        margin-left: 10px;
-        padding: 8px 14px;
-        background: #eee;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-
-    .menu-btn {
-        margin-left: auto;
-        padding: 10px 14px;
-        background: #eee;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    .question-box {
-        margin-top: 10px;
-        background: #fff;
-        padding: 20px;
         border-radius: 10px;
-        border: 1px solid #ddd;
+        padding: 15px;
     }
 
-    .nav-buttons {
-        margin-top: 30px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .btn {
-        padding: 10px 18px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .btn-back { background: #dcdcdc; }
-    .btn-ragu { background: #ffcc00; }
-    .btn-next { background: #4c8bff; color: white; }
-
-    /* ============================
-       SIDEBAR KANAN (DAFTAR SOAL)
-    ============================ */
-    .sidebar {
-        width: 260px;
-        background: #fff;
-        border-left: 1px solid #ddd;
-        padding: 20px;
-        transition: width .3s ease, opacity .3s ease;
-    }
-
-    .sidebar.hidden {
-        width: 0;
-        opacity: 0;
-        padding: 0;
-        overflow: hidden;
-        border: none;
-    }
-
-    .questions-grid {
+    /* GRID NOMOR SOAL */
+    .soal-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 10px;
     }
 
-    .q-item {
-        width: 40px;
-        height: 40px;
-        background: #ffffff;
-        color: black;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 6px;
+    /* BUTTON NOMOR */
+    .soal-btn {
+        height: 42px;
+        border: 1.5px solid #000;
+        background: #fff;
+        font-weight: 600;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 14px;
-        border: 1px solid #ccc;
     }
 
-    .q-answered { background: #4c8bff !important; color: white !important; }
-    .q-flag { background: #ffcc00 !important; color: black !important; }
-    .q-active { border: 2px solid #4c8bff; }
+    .soal-btn.active {
+        background: var(--dark-blue);
+        color: #fff;
+    }
 
-</style>
+    .soal-btn.answered {
+        background: var(--green);
+        color: #fff;
+        border-color: var(--green);
+    }
+
+    .soal-btn.ragu {
+        background: var(--yellow);
+        color: #fff;
+        border-color: var(--yellow);
+    }
+
+    /* =========================
+    TOGGLE NAVIGASI
+    ========================= */
+    .nav-toggle {
+        position: absolute;
+        top: -10px;              /* ⬅️ kunci jaraknya */
+        left: -18px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        z-index: 9999;
+    }
+
+    .nav-toggle i {
+        transition: transform 0.35s ease;
+    }
+
+    /* =========================
+    ANIMASI HIDE / SHOW NAV
+    ========================= */
+    #navSoal {
+        transition: transform 0.35s ease, opacity 0.3s ease;
+    }
+
+    /* NAV DISHIDE (FIX BOOTSTRAP GRID) */
+    .content-body.nav-hidden #navWrapper {
+        max-width: 0 !important;
+        flex: 0 0 0 !important;
+        padding: 0 !important;
+        overflow: visible;
+    }
+
+    .content-body.nav-hidden #navSoal {
+        transform: translateX(100%);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* SOAL MELEBAR */
+    .content-body.nav-hidden .soal-wrapper {
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* =========================
+    BUTTON BAWAH
+    ========================= */
+    #prevSoal,
+    #nextSoal {
+        background-color: var(--dark-blue) !important;
+        border-color: var(--dark-blue) !important;
+        color: #fff !important;
+        font-weight: 600;
+    }
+
+    #prevSoal:hover,
+    #nextSoal:hover {
+        background-color: #000f1e !important;
+        border-color: #000f1e !important;
+    }
+
+    #btnRagu {
+        background: var(--yellow);
+        color: #fff;
+        font-weight: 600;
+    }
+
+    /* =========================
+    BADGE NOMOR SOAL
+    ========================= */
+    #nomorSoal {
+        background-color: var(--dark-blue) !important;
+        color: #fff !important;
+        font-weight: 600;
+    }
+
+    /* =========================
+    RESPONSIVE (MOBILE)
+    ========================= */
+    @media (max-width: 992px) {
+
+        #navWrapper {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 260px;
+            z-index: 9998;
+            background: #fff;
+        }
+
+        .content-body.nav-hidden #navWrapper {
+            transform: translateX(100%);
+        }
+
+        .nav-toggle {
+            left: -40px;
+        }
+    }
+
+    .nav-box {
+        background: #fff;
+        border-radius: 10px;
+        padding: 32px 15px 15px; /* normal saja */
+    }
+    </style>
+
 </head>
 
 <body>
 
-<!-- ============================
-     SIDEBAR ADMIN KIRI
-============================ -->
-<div class="sidebar-admin">
-    @include('components.sidebar.admin')
+<!-- PRELOADER -->
+<div id="preloader">
+    <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
+    </div>
 </div>
 
-<div class="container">
+<div id="main-wrapper">
 
-    <!-- ============================
-         BAGIAN KIRI – SOAL
-    ============================ -->
-    <div class="content">
+    <x-nav-header />
+    <x-header />
 
-        <div class="top-section">
-            <div id="timer" class="timer-box">Waktu tersisa: 59:30</div>
+    @if(Auth::user()->role === 'ADMIN')
+        <x-sidebar.admin />
+    @else
+        <x-sidebar.staff />
+    @endif
 
-            <button id="hideTimeBtn" class="hide-btn" onclick="toggleTime()">Hide</button>
+    <!-- CONTENT -->
+    <div class="content-body">
+        <div class="container-fluid">
 
-            <button class="menu-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+            <!-- TIMER -->
+            <div class="mb-3 d-flex align-items-center gap-2">
+                <span class="border px-3 py-2 rounded bg-white fw-semibold" id="timeBox">
+                    Waktu tersisa <strong id="timer">30:00</strong>
+                </span>
+            </div>
+
+            <div class="row position-relative">
+
+                <!-- ===== KIRI ===== -->
+                <div class="col-lg-8 soal-wrapper">
+
+                    <div class="mb-2">
+                        <span>Soal No</span>
+                        <span class="badge bg-dark px-3 py-2" id="nomorSoal">1</span>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+
+                            @foreach($questions as $index => $question)
+                            <div class="soal-item" data-soal="{{ $index + 1 }}" style="{{ $index==0 ? '' : 'display:none' }}">
+                                
+                                <p class="fw-semibold soal-text">
+                                    {{ $question->question_text }}
+                                </p>
+
+                                @foreach($question->choices as $choice)
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input"
+                                            type="radio"
+                                            name="jawaban[{{ $question->question_id }}]"
+                                            value="{{ $choice->label }}">
+                                        <label class="form-check-label">
+                                            {{ $choice->label }}. {{ $choice->choice_value }}
+                                        </label>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                            @endforeach
+
+                        </div>
+                    </div>
+
+                    <!-- NAV BAWAH -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-dark" id="prevSoal">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </button>
+
+                        <button class="btn btn-warning fw-semibold" id="btnRagu">
+                            <i class="bi bi-bookmark-fill"></i> Ragu-ragu
+                        </button>
+
+                        <button class="btn btn-dark" id="nextSoal">
+                            Selanjutnya <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== KANAN (NAVIGASI) ===== -->
+                <div class="col-lg-4 position-relative" id="navWrapper">
+
+                    <!-- TOGGLE -->
+                    <button id="toggleNav" class="nav-toggle btn btn-dark btn-sm">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+
+                    <!-- NAV BOX -->
+                    <div class="nav-box" id="navSoal">
+                        <div class="soal-grid mt-4">
+                            @foreach($questions as $index => $q)
+                                <button class="soal-btn" data-soal="{{ $index + 1 }}">
+                                    {{ $index + 1 }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-
-        <div>
-            <small><strong>Soal No 1</strong></small>
-        </div>
-
-        <div class="question-box">
-            <h3>Berikut merupakan contoh soal matematika ilmu yang menyenangkan 
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do 
-                eiusmod tempor incididunt ut .</h3>
-
-            <input type="radio" name="answer"> Jawaban A <br>
-            <input type="radio" name="answer"> Jawaban B <br>
-            <input type="radio" name="answer"> Jawaban C <br>
-            <input type="radio" name="answer"> Jawaban D
-        </div>
-
-        <div class="nav-buttons">
-            <button class="btn btn-back">Kembali</button>
-            <button class="btn btn-ragu">Ragu-ragu</button>
-            <button class="btn btn-next">Selanjutnya</button>
-        </div>
-
     </div>
-
-    <!-- ============================
-         SIDEBAR KANAN – DAFTAR SOAL
-    ============================ -->
-    <div id="sidebar" class="sidebar">
-        <div class="questions-grid">
-
-            <div class="q-item q-active" data-number="1">1</div>
-            <div class="q-item" data-number="2">2</div>
-            <div class="q-item" data-number="3">3</div>
-            <div class="q-item" data-number="4">4</div>
-            <div class="q-item" data-number="5">5</div>
-
-            <div class="q-item" data-number="6">6</div>
-            <div class="q-item" data-number="7">7</div>
-            <div class="q-item" data-number="8">8</div>
-            <div class="q-item" data-number="9">9</div>
-            <div class="q-item" data-number="10">10</div>
-
-        </div>
-    </div>
-
 </div>
+
+<!-- SCRIPT -->
+<script src="{{ asset('vendor/global/global.min.js') }}"></script>
+<script src="{{ asset('js/quixnav-init.js') }}"></script>
+<script src="{{ asset('js/custom.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 
 <script>
-/* ============================
-   TOGGLE WAKTU TERSISA
-============================ */
-function toggleTime() {
-    let timer = document.getElementById("timer");
-    let btn = document.getElementById("hideTimeBtn");
+document.addEventListener('DOMContentLoaded', function () {
 
-    if (timer.style.display === "none") {
-        timer.style.display = "inline-block";
-        btn.innerText = "Hide";
-    } else {
-        timer.style.display = "none";
-        btn.innerText = "Show";
+    let currentSoal = 1;
+    const totalSoal = {{ count($questions) }};
+    const jawaban = {};
+    const ragu = new Set();
+
+    const btnPrev = document.getElementById('prevSoal');
+    const btnNext = document.getElementById('nextSoal');
+    const btnRagu = document.getElementById('btnRagu');
+    const nomorSoal = document.getElementById('nomorSoal');
+
+    /* =========================
+       SET ACTIVE SOAL
+    ========================= */
+    function setActiveSoal(no) {
+        currentSoal = Number(no);
+
+        // Update nomor atas
+        nomorSoal.innerText = currentSoal;
+
+        // Tampilkan soal aktif
+        document.querySelectorAll('.soal-item').forEach(item => {
+            item.style.display =
+                item.dataset.soal == currentSoal ? 'block' : 'none';
+        });
+
+        // Navigasi kanan
+        document.querySelectorAll('.soal-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.soal == currentSoal) {
+                btn.classList.add('active');
+            }
+        });
+
+        updateNavButton();
     }
-}
 
-/* ============================
-   TOGGLE SIDEBAR DAFTAR SOAL
-============================ */
-function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("hidden");
-}
+    /* =========================
+       UPDATE BUTTON NAV
+    ========================= */
+    function updateNavButton() {
+        // Tombol kembali (jangan geser layout)
+        if (currentSoal === 1) {
+            btnPrev.style.visibility = 'hidden'; // ⬅️ PENTING
+        } else {
+            btnPrev.style.visibility = 'visible';
+        }
 
-/* ============================
-   WARNA STATUS NOMOR SOAL
-============================ */
-let activeQuestion = 1;
+        // Tombol selanjutnya / selesai
+        if (currentSoal === totalSoal) {
+            btnNext.innerHTML = 'Selesai';
+            btnNext.classList.remove('btn-dark');
+            btnNext.classList.add('btn-success');
+        } else {
+            btnNext.innerHTML = 'Selanjutnya <i class="bi bi-arrow-right"></i>';
+            btnNext.classList.remove('btn-success');
+            btnNext.classList.add('btn-dark');
+        }
+    }
 
-document.querySelectorAll('input[name="answer"]').forEach(opt => {
-    opt.addEventListener('change', function () {
-        let btn = document.querySelector('.q-item[data-number="' + activeQuestion + '"]');
-        btn.classList.remove('q-flag');
-        btn.classList.add('q-answered');
+    /* =========================
+       KLIK NAVIGASI KANAN
+    ========================= */
+    document.querySelectorAll('.soal-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            setActiveSoal(this.dataset.soal);
+        });
     });
-});
 
-document.querySelector('.btn-ragu').addEventListener('click', function () {
-    let btn = document.querySelector('.q-item[data-number="' + activeQuestion + '"]');
-    btn.classList.remove('q-answered');
-    btn.classList.add('q-flag');
-});
+    /* =========================
+       PILIH JAWABAN
+    ========================= */
+    document.querySelectorAll('.form-check-input').forEach(radio => {
+        radio.addEventListener('change', function () {
+            jawaban[currentSoal] = this.value;
+            ragu.delete(currentSoal);
 
-document.querySelectorAll('.q-item').forEach(item => {
-    item.addEventListener('click', function () {
-        document.querySelectorAll('.q-item').forEach(x => x.classList.remove('q-active'));
-        this.classList.add('q-active');
-        activeQuestion = this.dataset.number;
+            const btn = document.querySelector(
+                `.soal-btn[data-soal="${currentSoal}"]`
+            );
+            btn.classList.remove('ragu');
+            btn.classList.add('answered');
+        });
     });
+
+    /* =========================
+       TOMBOL RAGU
+    ========================= */
+    btnRagu.addEventListener('click', function () {
+        const btn = document.querySelector(
+            `.soal-btn[data-soal="${currentSoal}"]`
+        );
+
+        // JIKA SUDAH RAGU → BALIK
+        if (btn.classList.contains('ragu')) {
+            btn.classList.remove('ragu');
+
+            // Kalau sudah dijawab → hijau
+            if (jawaban[currentSoal]) {
+                btn.classList.add('answered');
+            }
+            // Kalau belum dijawab → tetap biru (active)
+        }
+        // JIKA BELUM RAGU → JADI RAGU
+        else {
+            btn.classList.remove('answered');
+            btn.classList.add('ragu');
+        }
+    });
+
+    /* =========================
+       NEXT & PREV
+    ========================= */
+    const SUBTEST_URL = "/subtest";
+        btnNext.addEventListener('click', function () {
+        if (currentSoal < totalSoal) {
+            setActiveSoal(currentSoal + 1);
+        } else {
+            // KLIK SELESAI → PINDAH KE SUBTEST
+            window.location.href = SUBTEST_URL;
+        }
+    });
+
+    btnPrev.addEventListener('click', function () {
+        if (currentSoal > 1) {
+            setActiveSoal(currentSoal - 1);
+        }
+    });
+
+    /* =========================
+       TOGGLE NAVIGASI KANAN
+    ========================= */
+    const toggleNav = document.getElementById('toggleNav');
+const toggleIcon = toggleNav.querySelector('i');
+
+toggleNav.addEventListener('click', function () {
+    const content = document.querySelector('.content-body');
+    content.classList.toggle('nav-hidden');
+
+    // GANTI ARAH PANAH
+    if (content.classList.contains('nav-hidden')) {
+        toggleIcon.classList.remove('bi-chevron-right');
+        toggleIcon.classList.add('bi-chevron-left');
+    } else {
+        toggleIcon.classList.remove('bi-chevron-left');
+        toggleIcon.classList.add('bi-chevron-right');
+    }
 });
+
+    /* =========================
+       INIT
+    ========================= */
+    setActiveSoal(1);
+
+});
+
+let timeLeft = 30 * 60; // 30 menit dalam detik
+    const timerEl = document.getElementById('timer');
+
+    function startTimer() {
+        const timerInterval = setInterval(() => {
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+
+            timerEl.textContent =
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+
+                // WAKTU HABIS → LANGSUNG KE SUBTEST
+                window.location.href = SUBTEST_URL;
+            }
+
+            timeLeft--;
+        }, 1000);
+    }
+
+    startTimer();
 </script>
 
 </body>
