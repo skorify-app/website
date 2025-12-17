@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\SubtestController;
 use App\Models\Account;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExamController;
 
 
 
@@ -60,9 +61,10 @@ Route::delete('/staff/{staff_id}', [StaffController::class, 'destroy'])
 });
 
 // Pengerjaan Soal (Admin)
-Route::get('/admin/pengerjaan', function () {
-    return view('Admin.pengerjaan');
-})->name('admin.pengerjaan');
+
+Route::get('/admin/pengerjaan/{subtest_id}', [ExamController::class, 'index'])
+    ->name('pengerjaan')
+    ->middleware('auth');
 
 
 Route::get('/admin/tambahadmin', function () {
@@ -74,6 +76,14 @@ Route::get('/profile', [ProfileController::class, 'index'])
 
 Route::post('/profile', [ProfileController::class, 'update'])
     ->name('profile.update')->middleware('auth');
+
+Route::post('/pengerjaan/save', [ExamController::class, 'saveAnswer'])
+    ->name('pengerjaan.save')
+    ->middleware('auth');
+
+Route::get('/pengerjaan/selesai/{score_id}', [ExamController::class, 'selesai']
+)->name('pengerjaan.selesai')
+ ->middleware('auth');
 
 // Subtes Routes
 // Route::resource('subtes', SubtesController::class);

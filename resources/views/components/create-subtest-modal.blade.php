@@ -1,3 +1,7 @@
+<form id="createSubtestForm" enctype="multipart/form-data">
+    @csrf
+
+    
 <div class="modal-subtes" id="create-subtest-modal">
     <div class="modal-contentSubtes text-dark">
         <span class="close-btn">&times;</span>

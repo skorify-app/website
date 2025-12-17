@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\DB;
 
 class SubtestController extends Controller
 {
@@ -25,35 +27,73 @@ class SubtestController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon_file' => 'exclude_if:icon_file,null|image|mimetypes:image/jpeg,image/png|max:1024',
-            'questions_file' => 'exclude_if:questions_file,null|required|file|mimes:xlsx,xltx,xlt|max:16384'
+            'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384'
         ]);
 
-        try {
-            $name = $data['name'];
+        DB::beginTransaction();
 
-            $subtest_exist = Subtest::where('subtest_name', $name)->exists();
-            if ($subtest_exist) {
+        try {
+            // =====================
+            // 1. CEK DUPLIKAT
+            // =====================
+            if (Subtest::where('subtest_name', $data['name'])->exists()) {
                 return response()->json([
                     'error' => 'Subtes ini sudah terdaftar'
                 ], 400);
             }
 
-            $data = [];
-            $data['subtest_name'] = $name;
+            // =====================
+            // 2. SIMPAN SUBTEST
+            // =====================
+            $subtestData = [
+                'subtest_name' => $data['name']
+            ];
 
             if ($request->hasFile('icon_file')) {
                 $extension = $request->file('icon_file')->getClientOriginalExtension();
-                $full_image_name = Str::random(8) . '.' . $extension;
-
-                $request->file('icon_file')->move(public_path('images/subtest'), $full_image_name);
-                $data['subtest_image_name'] = $full_image_name;
+                $filename = Str::random(10) . '.' . $extension;
+                $request->file('icon_file')->move(public_path('images/subtest'), $filename);
+                $subtestData['subtest_image_name'] = $filename;
             }
 
-            Subtest::create($data);
+            $subtest = Subtest::create($subtestData);
 
+            // =====================
+            // 3. BACA FILE EXCEL
+            // =====================
+            $spreadsheet = IOFactory::load($request->file('questions_file'));
+            $rows = $spreadsheet->getActiveSheet()->toArray();
+
+            foreach ($rows as $index => $row) {
+                if ($index === 0) continue; // skip header
+
+                [$questionText, $A, $B, $C, $D, $answer] = $row;
+
+                // insert question
+                $questionId = DB::table('questions')->insertGetId([
+                    'subtest_id' => $subtest->subtest_id,
+                    'question_text' => $questionText,
+                    'answer_label' => strtoupper($answer)
+                ]);
+
+                // insert choices
+                foreach (['A'=>$A, 'B'=>$B, 'C'=>$C, 'D'=>$D] as $label => $value) {
+                    DB::table('choices')->insert([
+                        'question_id' => $questionId,
+                        'label' => $label,
+                        'choice_value' => $value
+                    ]);
+                }
+            }
+
+            DB::commit();
             return response()->json(null, 201);
-        } catch (Exception) {
-            return response()->json(null, 500);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
