@@ -73,7 +73,7 @@ class SubtestController extends Controller
                 $questionId = DB::table('questions')->insertGetId([
                     'subtest_id' => $subtest->subtest_id,
                     'question_text' => $questionText,
-                    'answer_label' => strtoupper($answer)
+                    'answer' => strtoupper($answer)
                 ]);
 
                 // insert choices
