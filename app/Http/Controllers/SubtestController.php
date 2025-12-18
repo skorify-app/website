@@ -106,6 +106,8 @@ class SubtestController extends Controller
         $path = public_path("images/subtest/$name");
         if (File::exists($path)) File::delete($path);
 
+        DB::table('choices')->where('question_id', $subtest_id)->delete();
+        DB::table('questions')->where('subtest_id', $subtest_id)->delete();
         Subtest::destroy($subtest_id);
         return response()->json(null, 204);
     }
