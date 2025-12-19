@@ -55,7 +55,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card p-3">
-                        <h5 class="mb-3">User Statistics</h5>
+                        <h5 class="mb-3">Statistik Pengguna</h5>
                         <div class="chart-wrap">
                             <canvas id="userStatsChart" height="100"></canvas>
                         </div>
@@ -69,7 +69,7 @@
                     <div class="card p-3 stats-recap">
                         <div class="d-flex justify-content-between align-items-start flex-wrap">
                             <div class="pr-3" style="flex:1 1 60%;">
-                                <h5 class="mb-3">Statistics recap</h5>
+                                <h5 class="mb-3">Rekap Statistik</h5>
                                 <div class="d-flex align-items-center recap-items" style="gap:2.5rem;">
                                     <div class="recap-item d-flex align-items-center">
                                         <div class="recap-icon">
@@ -115,11 +115,11 @@
                 ></x-bottom-nav>
 
                 <x-bottom-nav
-                    title="Kelola Akun"
+                    title="Kelola Akun Staf"
                     link="/subtest"
                     icon="mdi-account-cog"
                     iconColor="#10b981"
-                    description="Tambah, edit atau hapus subtest"
+                    description="Lihat daftar akun staf dan kelola"
                 ></x-bottom-nav> 
                 
                 <x-bottom-nav
@@ -127,7 +127,7 @@
                     link="/profile"
                     icon="mdi-cog-outline"
                     iconColor="#f59e0b"
-                    description="Tambah, edit atau hapus subtest"
+                    description="Ubah profil dan kata sandi"
                 ></x-bottom-nav>   
             </div>
 

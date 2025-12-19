@@ -5,9 +5,9 @@
 <div class="row mb-4">
     <div class="col-12">
         <h5 class="mb-3">Jumlah akun</h5>
-        <div class="d-flex flex-wrap gap-3">
+        <div class="d-flex justify-content-between">
             @foreach ($total_acc as $summary)
-                <div class="card p-3" style="min-width:220px;">
+                <div class="card p-3" style="min-width:300px;">
                     <div class="d-flex align-items-center">
                         <div class="p-3 bg-light rounded mr-3" style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
                             @if ($summary->role ==  'STAFF')
