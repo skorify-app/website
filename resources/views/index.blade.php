@@ -8,7 +8,7 @@
 
     <title>Skorify | Masuk Akun</title>
 
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ @asset('./images/favicon.png') }}">
+     <link rel="icon" type="image/x-icon" sizes="96x96" href="{{ asset('images/skorify-logo.ico') }}">
     <link href="{{ @asset('./css/style.css') }}" rel="stylesheet">
 </head>
 <body class="h-100 bg-skorify">
