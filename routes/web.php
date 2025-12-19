@@ -1,14 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\SubtestController;
-use App\Models\Account;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
 
