@@ -51,20 +51,27 @@ async function showEditSubtestModal(e) {
     const row = e.target.closest("tr");
     elName('edit-subtest-id').value = row.getAttribute('data-subtest-id');
     elName('edit-subtest-name').value = row.getAttribute('data-subtest-name');
+    elName('edit-subtest-duration').value = row.getAttribute('data-subtest-duration') ?? '';
 }
 
 async function editSubtest() {
     const id = elName('edit-subtest-id').value;
     const name = elName('edit-subtest-name').value;
     const icon = elName('edit-subtest-icon');
+    const durationVal = elName('edit-subtest-duration').value;
 
     if (!name.length) {
         return await showAlert('error' ,'Gagal' ,'Mohon masukkan nama subtes');
     }
 
+    if (!durationVal.length || isNaN(parseInt(durationVal)) || parseInt(durationVal) < 0) {
+        return await showAlert('error', 'Gagal', 'Mohon masukkan durasi subtes (menit) yang valid');
+    }
+
     const formData = new FormData();
     formData.append('id', id);
     formData.append('name', name);
+    formData.append('duration_minutes', parseInt(durationVal));
     formData.append('icon', icon.files[0] ?? null);
 
     try {
@@ -94,16 +101,24 @@ async function editSubtest() {
         }
 
         const row = document.querySelector(`tr[data-subtest-id="${id}"]`);
+        const hadIcon = icon.files[0] ?? null;
         if (row) {
             row.children[1].textContent = name;
+            row.children[2].textContent = durationVal;
             row.dataset.subtest_name = name;
+            row.dataset.subtest_duration = durationVal;
         }
 
-        return await showAlert(
+        await showAlert(
             'success',
             'Data subtes telah diubah',
-            'Muat ulang halaman jika kamu merubah ikon subtes'
+            'Halaman akan dimuat ulang untuk menerapkan perubahan'
         );
+
+        // Reload so changes (including icons) are reflected
+        setTimeout(() => location.reload(), 600);
+
+        return;
     } catch(err) {
         return await showAlert('error' ,'Gagal', 'Terjadi kesalahan ketika ingin mengubah data subtes');
     }
@@ -113,11 +128,17 @@ async function createSubtest() {
     const name = elName('subtest-name').value;
     if (!name.length) return await showAlert('error', 'Gagal', 'Mohon masukkan nama subtes');
 
+    const durationVal = elName('subtest-duration').value;
+    if (!durationVal.length || isNaN(parseInt(durationVal)) || parseInt(durationVal) < 0) {
+        return await showAlert('error', 'Gagal', 'Mohon masukkan durasi subtes (menit) yang valid');
+    }
+
     const iconFile = elName('subtest-icon');
     const questionsFile = elName('subtest-questions');
     const formData = new FormData();
 
     formData.append('name', name);
+    formData.append('duration_minutes', parseInt(durationVal));
     formData.append('icon_file', iconFile.files[0] ?? null);
     formData.append('questions_file', questionsFile.files[0] ?? null);
 
@@ -137,7 +158,24 @@ async function createSubtest() {
         return await showAlert('success' ,'Berhasil', 'Halaman akan diperbarui');
     }
 
-    await showAlert('error' ,'Gagal', 'Terjadi kesalahan ketika ingin membuat subtes');
+    // Try to surface server-side error message
+    let errMsg = 'Terjadi kesalahan ketika ingin membuat subtes';
+    try {
+        const json = await response.json();
+        if (json) {
+            if (json.error) errMsg = json.error;
+            else if (json.message) errMsg = json.message;
+            else if (json.errors) {
+                // validation errors
+                const arr = Object.values(json.errors).flat();
+                if (arr.length) errMsg = arr.join(' ');
+            }
+        }
+    } catch (e) {
+        // ignore parse errors and fall back to generic message
+    }
+
+    await showAlert('error' ,'Gagal', errMsg);
 }
 
 async function deleteSubtest(e) {

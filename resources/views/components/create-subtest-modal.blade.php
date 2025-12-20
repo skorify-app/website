@@ -6,6 +6,9 @@
         <label>Nama</label>
         <input type="text" name="subtest-name" placeholder="Masukkan nama subtes" />
 
+        <label>Durasi Subtes (Menit)</label>
+        <input type="number" min="0" step="1" name="subtest-duration" placeholder="Masukkan durasi subtes (menit)" />
+
         <label>Ikon</label>
         <input type="file" name="subtest-icon" accept=".png, .jpg, .jpeg" />
 

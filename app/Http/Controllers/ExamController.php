@@ -22,7 +22,10 @@ class ExamController extends Controller
 
         $score_id = 1; // sementara (nanti dari tabel scores)
 
-        return view('Admin.pengerjaan', compact('questions', 'subtest_id', 'score_id'));
+        $subtest = DB::table('subtests')->where('subtest_id', $subtest_id)->first();
+        $duration_minutes = $subtest->duration_minutes ?? 30;
+
+        return view('Admin.pengerjaan', compact('questions', 'subtest_id', 'score_id', 'duration_minutes'));
     }
 
     public function saveAnswer(Request $request)

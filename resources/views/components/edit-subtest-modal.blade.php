@@ -11,6 +11,9 @@
         <label>Ikon Subtes</label>
         <input type="file" name="edit-subtest-icon" accept=".png, .jpg, .jpeg" />
 
+        <label>Durasi Subtes (Menit)</label>
+        <input type="number" min="0" step="1" name="edit-subtest-duration" placeholder="Masukkan durasi subtes (menit)" />
+
         <button id="submit-edit-subtest">Edit</button>
     </div>
 </div>

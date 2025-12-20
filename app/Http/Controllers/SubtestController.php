@@ -27,7 +27,8 @@ class SubtestController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon_file' => 'exclude_if:icon_file,null|image|mimetypes:image/jpeg,image/png|max:1024',
-            'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384'
+            'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384',
+            'duration_minutes' => 'required|integer|min:0'
         ]);
 
         DB::beginTransaction();
@@ -46,7 +47,8 @@ class SubtestController extends Controller
             // 2. SIMPAN SUBTEST
             // =====================
             $subtestData = [
-                'subtest_name' => $data['name']
+                'subtest_name' => $data['name'],
+                'duration_minutes' => $data['duration_minutes']
             ];
 
             if ($request->hasFile('icon_file')) {
@@ -69,11 +71,20 @@ class SubtestController extends Controller
 
                 [$questionText, $A, $B, $C, $D, $answer] = $row;
 
+                // skip empty rows
+                if (trim((string)$questionText) === '') continue;
+
+                // validate answer label (should be A/B/C/D)
+                $answerLabel = strtoupper(trim((string)$answer));
+                if (!in_array($answerLabel, ['A','B','C','D'])) {
+                    throw new Exception("Invalid answer label '{$answer}' on row " . ($index + 1));
+                }
+
                 // insert question
                 $questionId = DB::table('questions')->insertGetId([
                     'subtest_id' => $subtest->subtest_id,
                     'question_text' => $questionText,
-                    'answer' => strtoupper($answer)
+                    'answer_label' => $answerLabel
                 ]);
 
                 // insert choices
@@ -117,8 +128,9 @@ class SubtestController extends Controller
         try {
             $request->validate([
                 'id' => 'required|string|max:5',
-                'name' => 'required|string|min:3|max:32',
-                'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024'
+                    'name' => 'required|string|min:3|max:32',
+                'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024',
+                'duration_minutes' => 'required|integer|min:0'
             ]);
 
             $subtest_id = intval($request->get('id'));
@@ -132,6 +144,7 @@ class SubtestController extends Controller
             }
 
             $subtest->subtest_name = $subtest_name;
+            $subtest->duration_minutes = intval($request->get('duration_minutes'));
 
             if ($request->hasFile('icon')) {
                 $icon_file_name = $subtest->subtest_image_name;

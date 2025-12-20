@@ -235,7 +235,7 @@
             <!-- TIMER -->
             <div class="mb-3 d-flex align-items-center gap-2">
                 <span class="border px-3 py-2 rounded bg-white fw-semibold" id="timeBox">
-                    Waktu tersisa <strong id="timer">30:00</strong>
+                    Waktu tersisa <strong id="timer">{{ sprintf('%02d:00', $duration_minutes ?? 30) }}</strong>
                 </span>
             </div>
 
@@ -482,7 +482,8 @@ toggleNav.addEventListener('click', function () {
 
 });
 
-let timeLeft = 30 * 60; // 30 menit dalam detik
+const SUBTEST_URL = "/subtest";
+    let timeLeft = {{ $duration_minutes ?? 30 }} * 60; // durasi subtes (menit) dikonversi ke detik
     const timerEl = document.getElementById('timer');
 
     function startTimer() {
