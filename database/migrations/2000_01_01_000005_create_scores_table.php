@@ -9,16 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('scores', function (Blueprint $table) {
-            $table->integerIncrements('score_id')->primary();
+            $table->integerIncrements('score_id')->unsigned()->primary();
             $table->unsignedSmallInteger('subtest_id');
             $table->ulid('account_id');
+            $table->smallInteger('score');
+            $table->timestamp('recorded_at')->useCurrent();
 
             $table->foreign('subtest_id')
                 ->references('subtest_id')->on('subtests')->onDelete('cascade');
             $table->foreign('account_id')
                 ->references('account_id')->on('accounts')->onDelete('cascade');
-            $table->smallInteger('score');
-            $table->timestamp('recorded_at')->useCurrent();
+
+            $table->index(['score_id', 'account_id']);
         });
     }
 

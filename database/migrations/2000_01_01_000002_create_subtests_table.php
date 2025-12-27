@@ -9,9 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subtests', function (Blueprint $table) {
-            $table->smallIncrements('subtest_id')->primary();
-            $table->string('subtest_name', 20);
-            $table->string('subtest_image_name', 20)->nullable();
+            $table->smallIncrements('subtest_id')->unsigned()->primary();
+            $table->string('subtest_name', 20)->unique();
+            $table->string('subtest_image_name', 20)->nullable()->unique();
+            $table->unsignedInteger('duration_seconds');
         });
     }
 
