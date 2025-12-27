@@ -11,12 +11,14 @@ return new class extends Migration
         Schema::create('recorded_answers', function (Blueprint $table) {
             $table->unsignedInteger('score_id');
             $table->unsignedInteger('question_id');
+            $table->char('answer');
 
             $table->foreign('score_id')
                 ->references('score_id')->on('scores')->onDelete('cascade');
             $table->foreign('question_id')
                 ->references('question_id')->on('questions')->onDelete('cascade');
-            $table->char('answer');
+
+            $table->index(['score_id', 'question_id']);
         });
     }
 

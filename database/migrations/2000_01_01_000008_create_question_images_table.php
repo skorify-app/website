@@ -8,22 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('choices', function (Blueprint $table) {
+        Schema::create('question_images', function (Blueprint $table) {
             $table->unsignedInteger('question_id');
-            $table->char('label', 1);
-            $table->string('choice_value', 100);
+            $table->string('image_name', 20);
 
             $table->foreign('question_id')
                 ->references('question_id')
                 ->on('questions')
                 ->onDelete('cascade');
-
-            $table->index(['question_id']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('choices');
+        Schema::dropIfExists('question_logs');
     }
 };

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->ulid('account_id')->primary();
             $table->string('full_name', 60);
-            $table->string('email', 60);
+            $table->string('email', 60)->unique();
             $table->string('password', 128);
             $table->enum('role', ['ADMIN', 'STAFF', 'PARTICIPANT']);
         });
