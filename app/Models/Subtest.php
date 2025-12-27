@@ -16,6 +16,6 @@ class Subtest extends Model
         'subtest_id',
         'subtest_name',
         'subtest_image_name',
-        'duration_minutes',
+        'duration_seconds',
     ];
 }

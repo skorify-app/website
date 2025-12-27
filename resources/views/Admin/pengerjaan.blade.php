@@ -235,7 +235,13 @@
             <!-- TIMER -->
             <div class="mb-3 d-flex align-items-center gap-2">
                 <span class="border px-3 py-2 rounded bg-white fw-semibold" id="timeBox">
-                    Waktu tersisa <strong id="timer">{{ sprintf('%02d:00', $duration_minutes ?? 30) }}</strong>
+                    @php
+                        $ds = $duration_seconds ?? 30 * 60;
+                        $h = intdiv($ds, 3600);
+                        $m = intdiv($ds % 3600, 60);
+                        $s = $ds % 60;
+                    @endphp
+                    Waktu tersisa <strong id="timer">{{ sprintf('%02d:%02d:%02d', $h, $m, $s) }}</strong>
                 </span>
             </div>
 
@@ -483,16 +489,18 @@ toggleNav.addEventListener('click', function () {
 });
 
 const SUBTEST_URL = "/subtest";
-    let timeLeft = {{ $duration_minutes ?? 30 }} * 60; // durasi subtes (menit) dikonversi ke detik
+    let timeLeft = {{ $duration_seconds ?? (30 * 60) }}; // durasi subtes dalam detik
     const timerEl = document.getElementById('timer');
 
     function startTimer() {
         const timerInterval = setInterval(() => {
 
-            const minutes = Math.floor(timeLeft / 60);
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
             const seconds = timeLeft % 60;
 
             timerEl.textContent =
+                String(hours).padStart(2, '0') + ':' +
                 String(minutes).padStart(2, '0') + ':' +
                 String(seconds).padStart(2, '0');
 

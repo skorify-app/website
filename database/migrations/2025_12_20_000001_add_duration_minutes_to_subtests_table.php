@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         // only add column if it doesn't already exist (prevents duplicates on existing DBs)
-        if (!Schema::hasColumn('subtests', 'duration_minutes')) {
+        if (!Schema::hasColumn('subtests', 'duration_seconds')) {
             Schema::table('subtests', function (Blueprint $table) {
-                $table->unsignedSmallInteger('duration_minutes')->default(30)->after('subtest_image_name');
+                $table->unsignedInteger('duration_seconds')->default(30 * 60)->after('subtest_image_name');
             });
         }
     }
@@ -19,9 +19,9 @@ return new class extends Migration
     public function down(): void
     {
         // only drop column if it exists
-        if (Schema::hasColumn('subtests', 'duration_minutes')) {
+        if (Schema::hasColumn('subtests', 'duration_seconds')) {
             Schema::table('subtests', function (Blueprint $table) {
-                $table->dropColumn('duration_minutes');
+                $table->dropColumn('duration_seconds');
             });
         }
     }

@@ -28,7 +28,7 @@ class SubtestController extends Controller
             'name' => 'required|string|max:255',
             'icon_file' => 'exclude_if:icon_file,null|image|mimetypes:image/jpeg,image/png|max:1024',
             'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384',
-            'duration_minutes' => 'required|integer|min:0'
+            'duration_seconds' => 'required|integer|min:0'
         ]);
 
         DB::beginTransaction();
@@ -48,7 +48,7 @@ class SubtestController extends Controller
             // =====================
             $subtestData = [
                 'subtest_name' => $data['name'],
-                'duration_minutes' => $data['duration_minutes']
+                'duration_seconds' => intval($data['duration_seconds'])
             ];
 
             if ($request->hasFile('icon_file')) {
@@ -74,10 +74,38 @@ class SubtestController extends Controller
                 // skip empty rows
                 if (trim((string)$questionText) === '') continue;
 
-                // validate answer label (should be A/B/C/D)
-                $answerLabel = strtoupper(trim((string)$answer));
+                // normalize and accept multiple answer formats
+                $answerRaw = trim((string)$answer);
+                $answerLabel = strtoupper($answerRaw);
+
+                // Map numeric answers 1-4 to A-D
+                if (preg_match('/^[1-4]$/', $answerRaw)) {
+                    $map = ['1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D'];
+                    $answerLabel = $map[$answerRaw];
+                }
+
+                // If still not A-D, try matching exact choice text (case-insensitive)
                 if (!in_array($answerLabel, ['A','B','C','D'])) {
-                    throw new Exception("Invalid answer label '{$answer}' on row " . ($index + 1));
+                    $choiceMap = [
+                        'A' => trim((string)$A),
+                        'B' => trim((string)$B),
+                        'C' => trim((string)$C),
+                        'D' => trim((string)$D),
+                    ];
+                    $matched = null;
+                    foreach ($choiceMap as $label => $text) {
+                        if ($text !== '' && strcasecmp($text, $answerRaw) === 0) {
+                            $matched = $label;
+                            break;
+                        }
+                    }
+
+                    if ($matched) {
+                        $answerLabel = $matched;
+                    } else {
+                        $preview = str_replace("'", "\\'", substr((string)$questionText, 0, 100));
+                        throw new Exception("Invalid answer label '{$answerRaw}' on row " . ($index + 1) . " (question: '{$preview}'). Expected A/B/C/D, 1-4, or exact choice text.");
+                    }
                 }
 
                 // insert question
@@ -130,7 +158,7 @@ class SubtestController extends Controller
                 'id' => 'required|string|max:5',
                     'name' => 'required|string|min:3|max:32',
                 'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024',
-                'duration_minutes' => 'required|integer|min:0'
+                'duration_seconds' => 'required|integer|min:0'
             ]);
 
             $subtest_id = intval($request->get('id'));
@@ -144,8 +172,7 @@ class SubtestController extends Controller
             }
 
             $subtest->subtest_name = $subtest_name;
-            $subtest->duration_minutes = intval($request->get('duration_minutes'));
-
+            $subtest->duration_seconds = intval($request->get('duration_seconds'));
             if ($request->hasFile('icon')) {
                 $icon_file_name = $subtest->subtest_image_name;
 

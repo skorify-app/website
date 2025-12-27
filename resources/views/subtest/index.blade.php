@@ -72,10 +72,19 @@
                         </thead>
                         <tbody>
                         @forelse ($subtests as $subtest)
+                            @php
+                                $ds = $subtest['duration_seconds'] ?? 1800;
+                                $h = intdiv($ds, 3600);
+                                $m = intdiv($ds % 3600, 60);
+                                $s = $ds % 60;
+                                $hms = sprintf('%02d:%02d:%02d', $h, $m, $s);
+                            @endphp
                             <tr
                                 data-subtest-id="{{ $subtest['subtest_id'] }}"
                                 data-subtest-name="{{ $subtest['subtest_name'] }}"
-                                data-subtest-duration="{{ $subtest['duration_minutes'] }}"
+                                data-subtest-hours="{{ $h }}"
+                                data-subtest-minutes="{{ $m }}"
+                                data-subtest-seconds="{{ $s }}"
                             >
                                 <td>
                                     @if($subtest['subtest_image_name'])
@@ -87,7 +96,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $subtest['subtest_name'] }}</td>
-                                <td>{{ $subtest['duration_minutes'] }} </td>
+                                <td>{{ $hms }} </td>
                                 <td class="actions">
                                     <button class="btn-delete bi bi-trash"></button>
                                     <button class="btn-edit bi bi-pencil-square"></button>
