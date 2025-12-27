@@ -27,7 +27,8 @@ class SubtestController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'icon_file' => 'exclude_if:icon_file,null|image|mimetypes:image/jpeg,image/png|max:1024',
-            'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384'
+            'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384',
+            'duration_seconds' => 'required|integer|min:0'
         ]);
 
         DB::beginTransaction();
@@ -46,7 +47,8 @@ class SubtestController extends Controller
             // 2. SIMPAN SUBTEST
             // =====================
             $subtestData = [
-                'subtest_name' => $data['name']
+                'subtest_name' => $data['name'],
+                'duration_seconds' => intval($data['duration_seconds'])
             ];
 
             if ($request->hasFile('icon_file')) {
@@ -69,11 +71,48 @@ class SubtestController extends Controller
 
                 [$questionText, $A, $B, $C, $D, $answer] = $row;
 
+                // skip empty rows
+                if (trim((string)$questionText) === '') continue;
+
+                // normalize and accept multiple answer formats
+                $answerRaw = trim((string)$answer);
+                $answerLabel = strtoupper($answerRaw);
+
+                // Map numeric answers 1-4 to A-D
+                if (preg_match('/^[1-4]$/', $answerRaw)) {
+                    $map = ['1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D'];
+                    $answerLabel = $map[$answerRaw];
+                }
+
+                // If still not A-D, try matching exact choice text (case-insensitive)
+                if (!in_array($answerLabel, ['A','B','C','D'])) {
+                    $choiceMap = [
+                        'A' => trim((string)$A),
+                        'B' => trim((string)$B),
+                        'C' => trim((string)$C),
+                        'D' => trim((string)$D),
+                    ];
+                    $matched = null;
+                    foreach ($choiceMap as $label => $text) {
+                        if ($text !== '' && strcasecmp($text, $answerRaw) === 0) {
+                            $matched = $label;
+                            break;
+                        }
+                    }
+
+                    if ($matched) {
+                        $answerLabel = $matched;
+                    } else {
+                        $preview = str_replace("'", "\\'", substr((string)$questionText, 0, 100));
+                        throw new Exception("Invalid answer label '{$answerRaw}' on row " . ($index + 1) . " (question: '{$preview}'). Expected A/B/C/D, 1-4, or exact choice text.");
+                    }
+                }
+
                 // insert question
                 $questionId = DB::table('questions')->insertGetId([
                     'subtest_id' => $subtest->subtest_id,
                     'question_text' => $questionText,
-                    'answer' => strtoupper($answer)
+                    'answer_label' => $answerLabel
                 ]);
 
                 // insert choices
@@ -117,8 +156,9 @@ class SubtestController extends Controller
         try {
             $request->validate([
                 'id' => 'required|string|max:5',
-                'name' => 'required|string|min:3|max:32',
-                'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024'
+                    'name' => 'required|string|min:3|max:32',
+                'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024',
+                'duration_seconds' => 'required|integer|min:0'
             ]);
 
             $subtest_id = intval($request->get('id'));
@@ -132,7 +172,7 @@ class SubtestController extends Controller
             }
 
             $subtest->subtest_name = $subtest_name;
-
+            $subtest->duration_seconds = intval($request->get('duration_seconds'));
             if ($request->hasFile('icon')) {
                 $icon_file_name = $subtest->subtest_image_name;
 

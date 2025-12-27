@@ -312,6 +312,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     }
 
     .modal-contentSubtes input[type="text"],
+    .modal-contentSubtes input[type="number"],
     .modal-contentSubtes input[type="file"] {
       padding: 8px;
       border: 1px solid #ccc;
