@@ -2,18 +2,21 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
-use function App\Http\Controllers\generateAccountID;
-use function App\Http\Controllers\hashPassword;
+use Symfony\Component\Uid\Ulid;
 
 return new class extends Migration
 {
     public function up(): void
     {
         DB::table('accounts')->insert([
-            'account_id' => generateAccountID(),
+            'account_id' => new Ulid(),
             'full_name' => 'Admin Skorify',
             'email' => 'admin@default.email',
-            'password' => hashPassword('P4$$word.'),
+            'password' => password_hash('P4$$word.', PASSWORD_ARGON2ID,  [
+                'memory_cost' => 65536,
+                'time_cost' => 3,
+                'threads' => 4,
+            ]),
             'role' => 'ADMIN'
         ]);
     }
