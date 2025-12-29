@@ -287,7 +287,7 @@
 
                             @foreach($questions as $index => $question)
                             <div class="soal-item" data-soal="{{ $index + 1 }}" style="{{ $index==0 ? '' : 'display:none' }}">
-                                
+
                                 <p class="fw-semibold soal-text">
                                     {{ $question->question_text }}
                                 </p>
