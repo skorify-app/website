@@ -278,11 +278,7 @@
                                 </p>
 
                                 @if($question->image)
-                                    <div class="gambar-soal">
-                                        <img src="{{ $question->image->url }}"
-                                            class="img-fluid rounded"
-                                            alt="Gambar soal">
-                                    </div>
+                                <img src="{{ asset('storage/questions/'.$question->subtest_id.'/'.$question->image->image_name) }}">
                                 @endif
 
                                 @foreach($question->choices as $choice)

@@ -3,22 +3,34 @@
         <span class="close-btn">&times;</span>
         <h3>Tambah Subtes</h3>
 
-        <label>Nama</label>
-        <input type="text" name="subtest-name" placeholder="Masukkan nama subtes" />
+        <form id="create-subtest-form"
+              method="POST"
+              action="/subtest"
+              enctype="multipart/form-data">
 
-         <label>Durasi Subtes</label>
-        <div class="d-flex justify-content-between align-items-center">
-            <input type="number" min="0" name="subtest-duration-hours" placeholder="Jam" style="width:27%" inputmode="numeric" pattern="[0-9]*" step="1" class="duration-input" />
-            <input type="number" min="0" max="59" name="subtest-duration-minutes" placeholder="Menit" style="width:32%" inputmode="numeric" pattern="[0-9]*" step="1" class="duration-input" />
-            <input type="number" min="0" max="59" name="subtest-duration-seconds" placeholder="Detik" style="width:32%" inputmode="numeric" pattern="[0-9]*" step="1" class="duration-input" />
-        </div>
+            @csrf
 
-        <label>Ikon</label>
-        <input type="file" name="subtest-icon" accept=".png, .jpg, .jpeg" />
+            <label>Nama</label>
+            <input type="text" name="name" placeholder="Masukkan nama subtes" />
 
-        <label>File Soal (Excel)</label>
-        <input type="file" name="subtest-questions" accept=".xlsx, .xltx, .xlt" />
+            <label>Durasi Subtes</label>
+            <div class="d-flex justify-content-between align-items-center">
+                <input type="number" name="duration_hours" placeholder="Jam" style="width:27%" />
+                <input type="number" name="duration_minutes" placeholder="Menit" style="width:32%" />
+                <input type="number" name="duration_seconds_input" placeholder="Detik" style="width:32%" />
+            </div>
 
-        <button id="submit-create-subtest">Tambah</button>
+            <label>Ikon</label>
+            <input type="file" name="icon_file" accept=".png,.jpg,.jpeg" />
+
+            <label>File Soal (Excel)</label>
+            <input type="file" name="questions_file" accept=".xlsx,.xltx,.xlt" />
+
+            <label>File Gambar Soal (ZIP)</label>
+            <input type="file" name="images_zip" accept=".zip" />
+
+            <button type="button" id="submit-create-subtest">Tambah</button>
+
+        </form>
     </div>
 </div>
