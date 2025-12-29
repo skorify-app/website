@@ -107,7 +107,7 @@
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        z-index: 9999;
+        z-index: 1;
     }
 
     .nav-toggle i {
@@ -202,6 +202,18 @@
         border-radius: 10px;
         padding: 32px 15px 15px; /* normal saja */
     }
+
+    .gambar-soal {
+        margin-top: 12px;     /* dekat ke teks soal */
+        margin-bottom: 28px;  /* JAUH dari jawaban */
+    }
+
+    .gambar-soal img {
+        max-width: 100%;   /* ⬅️ lebih besar */
+        width: 100%;        /* responsif */
+        height: auto;
+        display: block;
+    }
     </style>
 
 </head>
@@ -264,6 +276,14 @@
                                 <p class="fw-semibold soal-text">
                                     {{ $question->question_text }}
                                 </p>
+
+                                @if($question->image)
+                                    <div class="gambar-soal">
+                                        <img src="{{ $question->image->url }}"
+                                            class="img-fluid rounded"
+                                            alt="Gambar soal">
+                                    </div>
+                                @endif
 
                                 @foreach($question->choices as $choice)
                                     <div class="form-check mb-2">

@@ -9,21 +9,33 @@ class Soal extends Model
 {
     use HasFactory;
 
-    protected $table = 'soal';
+    protected $table = 'questions';
+
+    protected $primaryKey = 'question_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'subtes_id',
-        'pertanyaan',
-        'opsi_a',
-        'opsi_b',
-        'opsi_c',
-        'opsi_d',
-        'jawaban_benar',
+        'subtest_id',
+        'question_text',
     ];
 
-    public function subtes()
+    // Relasi ke subtes
+    public function subtest()
     {
-        return $this->belongsTo(Subtes::class, 'subtes_id');
+        return $this->belongsTo(Subtest::class, 'subtest_id');
+    }
+
+    // Relasi ke pilihan jawaban
+    public function choices()
+    {
+        return $this->hasMany(Choice::class, 'question_id')
+                    ->orderBy('label');
+    }
+
+    // Relasi ke gambar soal
+    public function image()
+    {
+        return $this->hasOne(QuestionImage::class, 'question_id');
     }
 }
-
-

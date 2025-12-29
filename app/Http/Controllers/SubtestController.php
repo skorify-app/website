@@ -69,7 +69,7 @@ class SubtestController extends Controller
             foreach ($rows as $index => $row) {
                 if ($index === 0) continue; // skip header
 
-                [$questionText, $A, $B, $C, $D, $answer] = $row;
+                [$questionText,$imageName, $A, $B, $C, $D, $answer] = $row;
 
                 // skip empty rows
                 if (trim((string)$questionText) === '') continue;
@@ -114,6 +114,13 @@ class SubtestController extends Controller
                     'question_text' => $questionText,
                     'answer_label' => $answerLabel
                 ]);
+
+                if (!empty($imageName)) {
+                    DB::table('question_images')->insert([
+                        'question_id' => $questionId,
+                        'image_name'  => $imageName
+                    ]);
+                }
 
                 // insert choices
                 foreach (['A'=>$A, 'B'=>$B, 'C'=>$C, 'D'=>$D] as $label => $value) {
