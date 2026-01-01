@@ -6,6 +6,43 @@ const CSRF_TOKEN = document
 
 const toggleModal = (modalName, display) => el(`${modalName}-subtest-modal`).style.display = display;
 
+// Prevent non-numeric entry and sanitize duration inputs (strip non-digits, enforce 0-59 for min/sec)
+function setupDurationInputSanitizers() {
+    document.querySelectorAll('.duration-input').forEach(input => {
+        // Prevent characters like 'e', '+', '-' in number inputs
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+                e.preventDefault();
+            }
+        });
+
+        input.addEventListener('input', () => {
+            // remove any non-digit characters
+            let v = input.value.replace(/\D/g, '');
+            // enforce max if provided (minutes/seconds)
+            if (input.hasAttribute('max')) {
+                const max = parseInt(input.getAttribute('max'), 10);
+                if (!isNaN(max) && parseInt(v || '0', 10) > max) v = String(max);
+            }
+            // remove leading zeros except single zero
+            if (v.length > 1) {
+                v = v.replace(/^0+(?=\d)/, '');
+            }
+            input.value = v;
+        });
+
+        input.addEventListener('paste', () => {
+            setTimeout(() => {
+                input.value = input.value.replace(/\D/g, '');
+            }, 0);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupDurationInputSanitizers();
+});
+
 const showAlert = async(icon, title, text) => {
     await Swal.fire({
         icon,
@@ -16,6 +53,14 @@ const showAlert = async(icon, title, text) => {
 }
 
 el('create-subtest').onclick = async() => {
+    // set sensible defaults for duration inputs when creating
+    try {
+        elName('subtest-duration-hours').value = elName('subtest-duration-hours').value || '0';
+        elName('subtest-duration-minutes').value = elName('subtest-duration-minutes').value || '0';
+        elName('subtest-duration-seconds').value = elName('subtest-duration-seconds').value || '0';
+    } catch (e) {
+        // ignore if inputs not present
+    }
     toggleModal('create', 'flex');
 }
 
@@ -51,6 +96,22 @@ async function showEditSubtestModal(e) {
     const row = e.target.closest("tr");
     elName('edit-subtest-id').value = row.getAttribute('data-subtest-id');
     elName('edit-subtest-name').value = row.getAttribute('data-subtest-name');
+
+    // populate hour/minute/second inputs
+    const h = row.getAttribute('data-subtest-hours') ?? '0';
+    const m = row.getAttribute('data-subtest-minutes') ?? '0';
+    const s = row.getAttribute('data-subtest-seconds') ?? '0';
+
+    elName('edit-subtest-duration-hours').value = h;
+    elName('edit-subtest-duration-minutes').value = m;
+    elName('edit-subtest-duration-seconds').value = s;
+}
+
+function formatSecondsToHms(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
 }
 
 async function editSubtest() {
@@ -58,13 +119,25 @@ async function editSubtest() {
     const name = elName('edit-subtest-name').value;
     const icon = elName('edit-subtest-icon');
 
+    // read hour/min/sec inputs
+    const h = parseInt(elName('edit-subtest-duration-hours').value || '0', 10);
+    const m = parseInt(elName('edit-subtest-duration-minutes').value || '0', 10);
+    const s = parseInt(elName('edit-subtest-duration-seconds').value || '0', 10);
+
     if (!name.length) {
         return await showAlert('error' ,'Gagal' ,'Mohon masukkan nama subtes');
     }
 
+    if (isNaN(h) || isNaN(m) || isNaN(s) || h < 0 || m < 0 || m > 59 || s < 0 || s > 59) {
+        return await showAlert('error', 'Gagal', 'Mohon masukkan durasi yang valid (Jam>=0, 0<=Menit<60, 0<=Detik<60)');
+    }
+
+    const durationSeconds = h * 3600 + m * 60 + s;
+
     const formData = new FormData();
     formData.append('id', id);
     formData.append('name', name);
+    formData.append('duration_seconds', durationSeconds);
     formData.append('icon', icon.files[0] ?? null);
 
     try {
@@ -93,17 +166,27 @@ async function editSubtest() {
             return await showAlert('error' ,'Gagal', message);
         }
 
-        const row = document.querySelector(`tr[data-subtest-id="${id}"]`);
+                const row = document.querySelector(`tr[data-subtest-id="${id}"]`);
+        const hadIcon = icon.files[0] ?? null;
         if (row) {
             row.children[1].textContent = name;
+            row.children[2].textContent = formatSecondsToHms(durationSeconds);
             row.dataset.subtest_name = name;
+            row.dataset.subtest_hours = h;
+            row.dataset.subtest_minutes = m;
+            row.dataset.subtest_seconds = s;
         }
 
-        return await showAlert(
+        await showAlert(
             'success',
             'Data subtes telah diubah',
-            'Muat ulang halaman jika kamu merubah ikon subtes'
+            'Halaman akan dimuat ulang untuk menerapkan perubahan'
         );
+
+        // Reload so changes (including icons) are reflected
+        setTimeout(() => location.reload(), 600);
+
+        return;
     } catch(err) {
         return await showAlert('error' ,'Gagal', 'Terjadi kesalahan ketika ingin mengubah data subtes');
     }
@@ -113,11 +196,23 @@ async function createSubtest() {
     const name = elName('subtest-name').value;
     if (!name.length) return await showAlert('error', 'Gagal', 'Mohon masukkan nama subtes');
 
+    // read duration inputs (H/M/S)
+    const h = parseInt(elName('subtest-duration-hours').value || '0', 10);
+    const m = parseInt(elName('subtest-duration-minutes').value || '0', 10);
+    const s = parseInt(elName('subtest-duration-seconds').value || '0', 10);
+
+    if (isNaN(h) || isNaN(m) || isNaN(s) || h < 0 || m < 0 || m > 59 || s < 0 || s > 59) {
+        return await showAlert('error', 'Gagal', 'Mohon masukkan durasi yang valid (Jam>=0, 0<=Menit<60, 0<=Detik<60)');
+    }
+
+    const durationSeconds = h * 3600 + m * 60 + s;
+
     const iconFile = elName('subtest-icon');
     const questionsFile = elName('subtest-questions');
     const formData = new FormData();
 
     formData.append('name', name);
+    formData.append('duration_seconds', durationSeconds);
     formData.append('icon_file', iconFile.files[0] ?? null);
     formData.append('questions_file', questionsFile.files[0] ?? null);
 
@@ -137,7 +232,24 @@ async function createSubtest() {
         return await showAlert('success' ,'Berhasil', 'Halaman akan diperbarui');
     }
 
-    await showAlert('error' ,'Gagal', 'Terjadi kesalahan ketika ingin membuat subtes');
+    // Try to surface server-side error message
+    let errMsg = 'Terjadi kesalahan ketika ingin membuat subtes';
+    try {
+        const json = await response.json();
+        if (json) {
+            if (json.error) errMsg = json.error;
+            else if (json.message) errMsg = json.message;
+            else if (json.errors) {
+                // validation errors
+                const arr = Object.values(json.errors).flat();
+                if (arr.length) errMsg = arr.join(' ');
+            }
+        }
+    } catch (e) {
+        // ignore parse errors and fall back to generic message
+    }
+
+    await showAlert('error' ,'Gagal', errMsg);
 }
 
 async function deleteSubtest(e) {
