@@ -214,6 +214,21 @@
         height: auto;
         display: block;
     }
+
+    /* =========================
+    GAMBAR SOAL
+    ========================= */
+    .gambar-soal {
+        text-align: center;
+        margin: 16px 0 24px;
+    }
+
+    .gambar-soal img {
+        max-width: 100%;      /* tidak keluar container */
+        width: auto;          /* jangan dipaksa */
+        max-height: 280px;    /* BATAS TINGGI */
+        object-fit: contain;  /* gambar tidak terpotong */
+    }
     </style>
 
 </head>
@@ -278,7 +293,9 @@
                                 </p>
 
                                 @if($question->image)
-                                <img src="{{ asset('storage/questions/'.$question->subtest_id.'/'.$question->image->image_name) }}">
+                                <div class="gambar-soal">
+                                    <img src="{{ asset('storage/questions/'.$question->subtest_id.'/'.$question->image->image_name) }}">
+                                </div>
                                 @endif
 
                                 @foreach($question->choices as $choice)

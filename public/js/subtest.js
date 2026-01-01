@@ -227,24 +227,27 @@ async function createSubtest() {
     try {
         const res = await fetch('/subtest', {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': CSRF_TOKEN },
+            headers: {
+                'X-CSRF-TOKEN': CSRF_TOKEN,
+            },
             body: formData
         });
 
-        const json = await res.json();
-
         if (!res.ok) {
-            return await showAlert('error', 'Gagal', json.error || 'Terjadi kesalahan');
+            await showAlert('error', 'Gagal', 'Terjadi kesalahan');
+            return;
         }
 
-        await showAlert('success', 'Berhasil', json.message);
-        setTimeout(() => location.reload(), 800);
+        await showAlert('success', 'Berhasil', 'Data berhasil disimpan');
+
+        setTimeout(() => {
+            window.location.href = '/subtest'; // tujuan redirect
+        }, 800);
 
     } catch (e) {
         await showAlert('error', 'Gagal', 'Tidak dapat terhubung ke server');
     }
 }
-
 async function deleteSubtest(e) {
     const row = e.target.closest("tr");
     const subtestName = row.getAttribute('data-subtest-name');
