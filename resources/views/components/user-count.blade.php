@@ -18,8 +18,16 @@
                                 <i class="mdi mdi-account-key" style="font-size:26px;color:#2563eb"></i>
                             @endif
                         </div>
+                        @php
+                            $roleLabels = [
+                                'staff' => 'Staf',
+                                'participant' => 'Peserta',
+                                'admin' => 'Admin',
+                            ];
+                            $roleKey = strtolower($summary->role ?? '');
+                        @endphp
                         <div>
-                            <div class="text-muted">{{ ucfirst(strtolower($summary->role)) }}</div>
+                            <div class="text-muted">{{ $roleLabels[$roleKey] ?? ucfirst($roleKey) }}</div>
                             <div class="h5">{{ $summary->total }}</div>
                         </div>  
                     </div>

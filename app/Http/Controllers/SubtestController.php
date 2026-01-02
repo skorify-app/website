@@ -12,14 +12,26 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
+use App\Models\Account;
+use App\Notifications\SubtestChangedNotification;
+use Illuminate\Support\Facades\Notification;
 
 class SubtestController extends Controller
 {
-    public function index(): Factory|View
+    public function index(Request $request): Factory|View
     {
         $role = auth()->user()->role ?? '';
-        $subtests = Subtest::all()->toArray();
-        return view('subtest.index', ['role' => $role, 'subtests' => $subtests]);
+        $search = $request->query('q');
+
+        $query = Subtest::query();
+        if (!empty($search)) {
+            $query->where('subtest_name', 'like', '%' . $search . '%');
+        }
+
+        // Use primary key ordering because timestamps are disabled on the model
+        $subtests = $query->orderBy('subtest_id', 'desc')->get();
+
+        return view('subtest.index', ['role' => $role, 'subtests' => $subtests, 'q' => $search]);
     }
 
     public function store(Request $request): JsonResponse
@@ -126,6 +138,17 @@ class SubtestController extends Controller
             }
 
             DB::commit();
+
+            // kirim notifikasi ke semua Admin dan Staff
+            try {
+                $actor = auth()->user()->full_name ?? auth()->user()->email ?? 'System';
+                $actorId = auth()->user()->account_id ?? null;
+                $recipients = Account::whereIn('role', ['ADMIN', 'STAFF'])->get();
+                Notification::send($recipients, new SubtestChangedNotification($actor, $actorId, 'menambahkan', $subtest->subtest_name));
+            } catch (\Exception $e) {
+                // jangan gagal proses utama jika notifikasi gagal
+            }
+
             return response()->json(null, 201);
 
         } catch (Exception $e) {
@@ -142,12 +165,23 @@ class SubtestController extends Controller
         if (!$subtest->exists()) return response()->json(null, 404);
 
         $name = $subtest->subtest_image_name;
+        $subtestName = $subtest->subtest_name ?? '';
         $path = public_path("images/subtest/$name");
         if (File::exists($path)) File::delete($path);
 
         DB::table('choices')->where('question_id', $subtest_id)->delete();
         DB::table('questions')->where('subtest_id', $subtest_id)->delete();
         Subtest::destroy($subtest_id);
+
+        // kirim notifikasi penghapusan
+        try {
+            $actor = auth()->user()->full_name ?? auth()->user()->email ?? 'System';
+            $actorId = auth()->user()->account_id ?? null;
+            $recipients = Account::whereIn('role', ['ADMIN', 'STAFF'])->get();
+            Notification::send($recipients, new SubtestChangedNotification($actor, $actorId, 'menghapus', $subtestName));
+        } catch (\Exception $e) {
+        }
+
         return response()->json(null, 204);
     }
 
@@ -156,7 +190,7 @@ class SubtestController extends Controller
         try {
             $request->validate([
                 'id' => 'required|string|max:5',
-                    'name' => 'required|string|min:3|max:32',
+                'name' => 'required|string|min:3|max:32',
                 'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024',
                 'duration_seconds' => 'required|integer|min:0'
             ]);
@@ -187,6 +221,16 @@ class SubtestController extends Controller
             }
 
             $subtest->save();
+
+            // kirim notifikasi ke Admin dan Staff bahwa subtest diedit
+            try {
+                $actor = auth()->user()->full_name ?? auth()->user()->email ?? 'System';
+                $actorId = auth()->user()->account_id ?? null;
+                $recipients = Account::whereIn('role', ['ADMIN', 'STAFF'])->get();
+                Notification::send($recipients, new SubtestChangedNotification($actor, $actorId, 'mengedit', $subtest_name));
+            } catch (\Exception $e) {
+            }
+
             return response()->json([
                 'name' => $subtest_name
             ], 204);
