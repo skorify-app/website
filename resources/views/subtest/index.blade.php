@@ -98,12 +98,13 @@
                                 <td>{{ $subtest['subtest_name'] }}</td>
                                 <td>{{ $hms }} </td>
                                 <td class="actions">
-                                    <button class="btn-delete bi bi-trash"></button>
-                                    <button class="btn-edit bi bi-pencil-square"></button>
-                                    <a href="{{ route('pengerjaan', $subtest['subtest_id']) }}">
-                                        <button class="btn-add bi bi-eye"></button>
-                                    </a>
-                                </td>
+                                <button type="button" class="btn-delete bi bi-trash"></button>
+                                <button type="button" class="btn-edit bi bi-pencil-square"></button>
+
+                                <a href="{{ route('pengerjaan', $subtest['subtest_id']) }}">
+                                    <button type="button" class="btn-add bi bi-eye"></button>
+                                </a>
+                            </td>
                             </tr>
                         @empty
                         @endforelse

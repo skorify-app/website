@@ -18,105 +18,157 @@ class SubtestController extends Controller
     public function index(): Factory|View
     {
         $role = auth()->user()->role ?? '';
-        $subtests = Subtest::all()->toArray();
-        return view('subtest.index', ['role' => $role, 'subtests' => $subtests]);
+        $subtests = Subtest::all();
+        return view('subtest.index', compact('role', 'subtests'));
     }
 
-    public function store(Request $request): JsonResponse
+    /* ===============================
+     * STORE SUBTEST (EXCEL + ZIP)
+     * =============================== */
+    public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'icon_file' => 'exclude_if:icon_file,null|image|mimetypes:image/jpeg,image/png|max:1024',
             'questions_file' => 'required|file|mimes:xlsx,xltx,xlt|max:16384',
-            'duration_seconds' => 'required|integer|min:0'
+            'images_zip' => 'nullable|file|mimes:zip|max:51200',
+            'icon_file' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'duration_hours' => 'nullable|integer|min:0',
+            'duration_minutes' => 'nullable|integer|min:0|max:59',
+            'duration_seconds_input' => 'nullable|integer|min:0|max:59',
         ]);
 
         DB::beginTransaction();
 
         try {
-            // =====================
-            // 1. CEK DUPLIKAT
-            // =====================
-            if (Subtest::where('subtest_name', $data['name'])->exists()) {
-                return response()->json([
-                    'error' => 'Subtes ini sudah terdaftar'
-                ], 400);
+            /* ===============================
+            * HITUNG DURASI
+            * =============================== */
+            $hours   = (int) ($request->duration_hours ?? 0);
+            $minutes = (int) ($request->duration_minutes ?? 0);
+            $seconds = (int) ($request->duration_seconds_input ?? 0);
+
+            $durationSeconds = ($hours * 3600) + ($minutes * 60) + $seconds;
+
+            if ($durationSeconds <= 0) {
+                throw new Exception('Durasi subtes tidak boleh 0');
             }
 
-            // =====================
-            // 2. SIMPAN SUBTEST
-            // =====================
-            $subtestData = [
-                'subtest_name' => $data['name'],
-                'duration_seconds' => intval($data['duration_seconds'])
-            ];
+            /* ===============================
+            * CEK DUPLIKAT
+            * =============================== */
+            if (Subtest::where('subtest_name', $request->name)->exists()) {
+                throw new Exception('Subtest sudah terdaftar');
+            }
 
+            /* ===============================
+            * SIMPAN SUBTEST
+            * =============================== */
+            $subtest = Subtest::create([
+                'subtest_name' => $request->name,
+                'duration_seconds' => $durationSeconds,
+            ]);
+
+            /* ===============================
+            * SIMPAN IKON
+            * =============================== */
             if ($request->hasFile('icon_file')) {
-                $extension = $request->file('icon_file')->getClientOriginalExtension();
-                $filename = Str::random(10) . '.' . $extension;
-                $request->file('icon_file')->move(public_path('images/subtest'), $filename);
-                $subtestData['subtest_image_name'] = $filename;
+                $iconName = Str::random(10) . '.' . $request->icon_file->extension();
+                $request->icon_file->move(public_path('images/subtest'), $iconName);
+
+                $subtest->update([
+                    'subtest_image_name' => $iconName
+                ]);
             }
 
-            $subtest = Subtest::create($subtestData);
+            /* ===============================
+            * EXTRACT ZIP GAMBAR
+            * =============================== */
+            $extractPath = storage_path("app/public/questions/{$subtest->subtest_id}");
+            File::ensureDirectoryExists($extractPath);
 
-            // =====================
-            // 3. BACA FILE EXCEL
-            // =====================
-            $spreadsheet = IOFactory::load($request->file('questions_file'));
-            $rows = $spreadsheet->getActiveSheet()->toArray();
-
-            foreach ($rows as $index => $row) {
-                if ($index === 0) continue; // skip header
-
-                [$questionText, $A, $B, $C, $D, $answer] = $row;
-
-                // skip empty rows
-                if (trim((string)$questionText) === '') continue;
-
-                // normalize and accept multiple answer formats
-                $answerRaw = trim((string)$answer);
-                $answerLabel = strtoupper($answerRaw);
-
-                // Map numeric answers 1-4 to A-D
-                if (preg_match('/^[1-4]$/', $answerRaw)) {
-                    $map = ['1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D'];
-                    $answerLabel = $map[$answerRaw];
+            if ($request->hasFile('images_zip')) {
+                $zip = new \ZipArchive;
+                if ($zip->open($request->images_zip->getRealPath()) !== true) {
+                    throw new Exception('Gagal membuka ZIP gambar');
                 }
 
-                // If still not A-D, try matching exact choice text (case-insensitive)
-                if (!in_array($answerLabel, ['A','B','C','D'])) {
-                    $choiceMap = [
-                        'A' => trim((string)$A),
-                        'B' => trim((string)$B),
-                        'C' => trim((string)$C),
-                        'D' => trim((string)$D),
-                    ];
-                    $matched = null;
-                    foreach ($choiceMap as $label => $text) {
-                        if ($text !== '' && strcasecmp($text, $answerRaw) === 0) {
-                            $matched = $label;
+                $zip->extractTo($extractPath);
+                $zip->close();
+
+                foreach (File::allFiles($extractPath) as $file) {
+                    $ext = strtolower($file->getExtension());
+                    if (!in_array($ext, ['png', 'jpg', 'jpeg'])) continue;
+
+                    $target = $extractPath . '/' . strtolower($file->getFilename());
+                    if ($file->getPathname() !== $target) {
+                        File::move($file->getPathname(), $target);
+                    }
+                }
+
+                foreach (File::directories($extractPath) as $dir) {
+                    File::deleteDirectory($dir);
+                }
+            }
+
+            /* ===============================
+            * BACA EXCEL
+            * =============================== */
+            $rows = IOFactory::load($request->questions_file)
+                ->getActiveSheet()
+                ->toArray();
+
+            foreach ($rows as $i => $row) {
+                if ($i === 0) continue;
+
+                [$question, $image, $A, $B, $C, $D, $answer] = $row;
+
+                if (!trim($question)) continue;
+
+                $map = ['1'=>'A','2'=>'B','3'=>'C','4'=>'D'];
+                $answer = $map[strtoupper(trim($answer))] ?? strtoupper(trim($answer));
+
+                if (!in_array($answer, ['A','B','C','D'])) {
+                    throw new Exception("Jawaban tidak valid di baris " . ($i + 1));
+                }
+
+                $questionId = DB::table('questions')->insertGetId([
+                    'subtest_id' => $subtest->subtest_id,
+                    'question_text' => $question,
+                    'answer_label' => $answer
+                ]);
+
+                if ($image) {
+                    $imageKey = preg_replace('/[^a-z0-9]/', '', strtolower($image));
+                    $foundFile = null;
+
+                    foreach (File::allFiles($extractPath) as $file) {
+                        $nameOnly = preg_replace(
+                            '/[^a-z0-9]/',
+                            '',
+                            strtolower(pathinfo($file->getFilename(), PATHINFO_FILENAME))
+                        );
+
+                        if ($nameOnly === $imageKey) {
+                            $foundFile = strtolower($file->getFilename());
                             break;
                         }
                     }
 
-                    if ($matched) {
-                        $answerLabel = $matched;
-                    } else {
-                        $preview = str_replace("'", "\\'", substr((string)$questionText, 0, 100));
-                        throw new Exception("Invalid answer label '{$answerRaw}' on row " . ($index + 1) . " (question: '{$preview}'). Expected A/B/C/D, 1-4, or exact choice text.");
+                    if (!$foundFile) {
+                        throw new Exception("Gambar '{$image}' tidak ditemukan (baris " . ($i + 1) . ")");
                     }
+
+                    DB::table('question_images')->insert([
+                        'question_id' => $questionId,
+                        'image_name' => $foundFile
+                    ]);
                 }
 
-                // insert question
-                $questionId = DB::table('questions')->insertGetId([
-                    'subtest_id' => $subtest->subtest_id,
-                    'question_text' => $questionText,
-                    'answer_label' => $answerLabel
-                ]);
+                foreach (['A'=>$A,'B'=>$B,'C'=>$C,'D'=>$D] as $label => $value) {
+                    if (!trim($value)) {
+                        throw new Exception("Pilihan {$label} kosong di baris " . ($i + 1));
+                    }
 
-                // insert choices
-                foreach (['A'=>$A, 'B'=>$B, 'C'=>$C, 'D'=>$D] as $label => $value) {
                     DB::table('choices')->insert([
                         'question_id' => $questionId,
                         'label' => $label,
@@ -126,15 +178,21 @@ class SubtestController extends Controller
             }
 
             DB::commit();
-            return response()->json(null, 201);
+
+            return redirect()
+                ->route('subtest.index')
+                ->with('success', 'Subtest berhasil ditambahkan');
 
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['error' => $e->getMessage()]);
         }
     }
+
 
     public function delete(String $subtest_id): JsonResponse
     {
@@ -156,9 +214,11 @@ class SubtestController extends Controller
         try {
             $request->validate([
                 'id' => 'required|string|max:5',
-                    'name' => 'required|string|min:3|max:32',
+                'name' => 'required|string|min:3|max:32',
                 'icon' => 'exclude_if:icon,null|image|mimetypes:image/jpeg,image/png|max:1024',
-                'duration_seconds' => 'required|integer|min:0'
+                'duration_hours'   => 'nullable|integer|min:0',
+                'duration_minutes' => 'nullable|integer|min:0|max:59',
+                'duration_seconds_input' => 'nullable|integer|min:0|max:59',
             ]);
 
             $subtest_id = intval($request->get('id'));
@@ -172,7 +232,11 @@ class SubtestController extends Controller
             }
 
             $subtest->subtest_name = $subtest_name;
-            $subtest->duration_seconds = intval($request->get('duration_seconds'));
+            $hours   = (int) ($request->input('duration_hours') ?? 0);
+            $minutes = (int) ($request->input('duration_minutes') ?? 0);
+            $seconds = (int) ($request->input('duration_seconds_input') ?? 0);
+
+            $subtest->duration_seconds = ($hours * 3600) + ($minutes * 60) + $seconds;
             if ($request->hasFile('icon')) {
                 $icon_file_name = $subtest->subtest_image_name;
 

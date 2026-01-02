@@ -2,33 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Soal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class ExamController extends Controller
 {
+    /**
+     * TAMPILKAN UJIAN
+     * - Soal diacak per mulai tes
+     * - Urutan soal tidak berubah saat refresh
+     * - Opsi jawaban TIDAK diacak
+     */
     public function index($subtest_id)
     {
-        $questions = DB::table('questions')
-            ->where('subtest_id', $subtest_id)
+        // ===============================
+        // 1. ACAK SOAL (SEKALI PER TES)
+        // ===============================
+        $sessionKey = "exam_questions_$subtest_id";
+
+        if (!Session::has($sessionKey)) {
+            $questionIds = DB::table('questions')
+                ->where('subtest_id', $subtest_id)
+                ->pluck('question_id')
+                ->toArray();
+
+            shuffle($questionIds); // acak soal
+            Session::put($sessionKey, $questionIds);
+        }
+
+        $orderedIds = Session::get($sessionKey);
+
+        // ===============================
+        // 2. AMBIL SOAL SESUAI URUTAN ACAK
+        // ===============================
+        $questions = Soal::with(['choices', 'image'])
+            ->whereIn('question_id', $orderedIds)
             ->get()
-            ->map(function ($q) {
-                $q->choices = DB::table('choices')
-                    ->where('question_id', $q->question_id)
-                    ->orderBy('label')
-                    ->get();
-                return $q;
-            });
+            ->sortBy(fn ($q) => array_search($q->question_id, $orderedIds))
+            ->values();
 
-        $score_id = 1; // sementara (nanti dari tabel scores)
+        // ===============================
+        // 3. DATA SUBTEST & DURASI
+        // ===============================
+        $subtest = DB::table('subtests')
+            ->where('subtest_id', $subtest_id)
+            ->first();
 
-        $subtest = DB::table('subtests')->where('subtest_id', $subtest_id)->first();
-        // duration is stored in seconds
-        $duration_seconds = $subtest->duration_seconds ?? 30 * 60;
+        $duration_seconds = $subtest->duration_seconds ?? 1800;
+        $score_id = 1; // sementara (PBL)
 
-        return view('Admin.pengerjaan', compact('questions', 'subtest_id', 'score_id', 'duration_seconds'));
+        return view('Admin.pengerjaan', compact(
+            'questions',
+            'subtest_id',
+            'score_id',
+            'duration_seconds'
+        ));
     }
 
+    /**
+     * SIMPAN JAWABAN
+     */
     public function saveAnswer(Request $request)
     {
         DB::table('scores')->updateOrInsert(
@@ -42,5 +77,17 @@ class ExamController extends Controller
         );
 
         return response()->json(['status' => 'ok']);
+    }
+
+    /**
+     * SELESAI UJIAN
+     */
+    public function finish($subtest_id)
+    {
+        // hapus urutan soal setelah selesai
+        Session::forget("exam_questions_$subtest_id");
+
+        return redirect('/dashboard')
+            ->with('success', 'Ujian selesai');
     }
 }

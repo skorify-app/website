@@ -193,65 +193,61 @@ async function editSubtest() {
 }
 
 async function createSubtest() {
-    const name = elName('subtest-name').value;
-    if (!name.length) return await showAlert('error', 'Gagal', 'Mohon masukkan nama subtes');
-
-    // read duration inputs (H/M/S)
-    const h = parseInt(elName('subtest-duration-hours').value || '0', 10);
-    const m = parseInt(elName('subtest-duration-minutes').value || '0', 10);
-    const s = parseInt(elName('subtest-duration-seconds').value || '0', 10);
-
-    if (isNaN(h) || isNaN(m) || isNaN(s) || h < 0 || m < 0 || m > 59 || s < 0 || s > 59) {
-        return await showAlert('error', 'Gagal', 'Mohon masukkan durasi yang valid (Jam>=0, 0<=Menit<60, 0<=Detik<60)');
+    const name = elName('name')?.value;
+    if (!name) {
+        return await showAlert('error', 'Gagal', 'Mohon masukkan nama subtes');
     }
 
-    const durationSeconds = h * 3600 + m * 60 + s;
+    const h = parseInt(elName('duration_hours')?.value || '0', 10);
+    const m = parseInt(elName('duration_minutes')?.value || '0', 10);
+    const s = parseInt(elName('duration_seconds_input')?.value || '0', 10);
 
-    const iconFile = elName('subtest-icon');
-    const questionsFile = elName('subtest-questions');
+    if (isNaN(h) || isNaN(m) || isNaN(s) || m > 59 || s > 59) {
+        return await showAlert(
+            'error',
+            'Gagal',
+            'Mohon masukkan durasi yang valid'
+        );
+    }
+
     const formData = new FormData();
-
     formData.append('name', name);
-    formData.append('duration_seconds', durationSeconds);
-    formData.append('icon_file', iconFile.files[0] ?? null);
-    formData.append('questions_file', questionsFile.files[0] ?? null);
+    formData.append('duration_hours', h);
+    formData.append('duration_minutes', m);
+    formData.append('duration_seconds_input', s);
 
-    const response = await fetch('/subtest', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': CSRF_TOKEN
-        },
-        body: formData
-    });
+    const iconFile = document.querySelector('input[name="icon_file"]');
+    const questionsFile = document.querySelector('input[name="questions_file"]');
+    const imagesZip = document.querySelector('input[name="images_zip"]');
 
-    if (response.status === 201) {
-        setTimeout(() => {
-            location.reload();
-        }, 1000);
+    if (iconFile?.files[0]) formData.append('icon_file', iconFile.files[0]);
+    if (questionsFile?.files[0]) formData.append('questions_file', questionsFile.files[0]);
+    if (imagesZip?.files[0]) formData.append('images_zip', imagesZip.files[0]);
 
-        return await showAlert('success' ,'Berhasil', 'Halaman akan diperbarui');
-    }
-
-    // Try to surface server-side error message
-    let errMsg = 'Terjadi kesalahan ketika ingin membuat subtes';
     try {
-        const json = await response.json();
-        if (json) {
-            if (json.error) errMsg = json.error;
-            else if (json.message) errMsg = json.message;
-            else if (json.errors) {
-                // validation errors
-                const arr = Object.values(json.errors).flat();
-                if (arr.length) errMsg = arr.join(' ');
-            }
+        const res = await fetch('/subtest', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': CSRF_TOKEN,
+            },
+            body: formData
+        });
+
+        if (!res.ok) {
+            await showAlert('error', 'Gagal', 'Terjadi kesalahan');
+            return;
         }
+
+        await showAlert('success', 'Berhasil', 'Data berhasil disimpan');
+
+        setTimeout(() => {
+            window.location.href = '/subtest'; // tujuan redirect
+        }, 800);
+
     } catch (e) {
-        // ignore parse errors and fall back to generic message
+        await showAlert('error', 'Gagal', 'Tidak dapat terhubung ke server');
     }
-
-    await showAlert('error' ,'Gagal', errMsg);
 }
-
 async function deleteSubtest(e) {
     const row = e.target.closest("tr");
     const subtestName = row.getAttribute('data-subtest-name');
@@ -296,3 +292,4 @@ async function deleteSubtest(e) {
         }
     }
 }
+
