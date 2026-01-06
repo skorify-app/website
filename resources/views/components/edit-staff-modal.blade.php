@@ -11,7 +11,7 @@
         <label>Email</label>
         <input type="email" name="edit-staff-email" />
 
-        <label>Password (kosongkan jika tidak ingin mengubah)</label>
+        <label>Kata Sandi (kosongkan jika tidak ingin mengubah)</label>
         <input type="password" name="edit-staff-password" />
 
         <button id="submit-edit-staff">Edit</button>

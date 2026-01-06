@@ -3,22 +3,57 @@
         <span class="close-btn">&times;</span>
         <h3>Tambah Subtes</h3>
 
-        <label>Nama</label>
-        <input type="text" name="subtest-name" placeholder="Masukkan nama subtes" />
+        <form id="create-subtest-form"
+              method="POST"
+              action="/subtest"
+              enctype="multipart/form-data">
 
-         <label>Durasi Subtes</label>
-        <div class="d-flex justify-content-between align-items-center">
-            <input type="number" min="0" name="subtest-duration-hours" placeholder="Jam" style="width:27%" inputmode="numeric" pattern="[0-9]*" step="1" class="duration-input" />
-            <input type="number" min="0" max="59" name="subtest-duration-minutes" placeholder="Menit" style="width:32%" inputmode="numeric" pattern="[0-9]*" step="1" class="duration-input" />
-            <input type="number" min="0" max="59" name="subtest-duration-seconds" placeholder="Detik" style="width:32%" inputmode="numeric" pattern="[0-9]*" step="1" class="duration-input" />
-        </div>
+            @csrf
 
-        <label>Ikon</label>
-        <input type="file" name="subtest-icon" accept=".png, .jpg, .jpeg" />
+            <label>Nama</label>
+            <input type="text" name="name" placeholder="Masukkan nama subtes" />
 
-        <label>File Soal (Excel)</label>
-        <input type="file" name="subtest-questions" accept=".xlsx, .xltx, .xlt" />
+            <label>Durasi Subtes</label>
+            <div class="d-flex justify-content-between align-items-center">
+                <input type="number" name="duration_hours" placeholder="Jam" style="width:27%" />
+                <input type="number" name="duration_minutes" placeholder="Menit" style="width:32%" />
+                <input type="number" name="duration_seconds_input" placeholder="Detik" style="width:32%" />
+            </div>
 
-        <button id="submit-create-subtest">Tambah</button>
+            <label>Ikon</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="icon_file" id="create-icon-file" accept=".png,.jpg,.jpeg">
+                <label class="custom-file-label" for="create-icon-file">Pilih berkas...</label>
+            </div>
+
+            <label>Berkas Soal (Excel)</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="questions_file" id="create-questions-file" accept=".xlsx,.xltx,.xlt">
+                <label class="custom-file-label" for="create-questions-file">Pilih berkas...</label>
+            </div>
+
+            <label>Berkas Gambar Soal (ZIP)</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="images_zip" id="create-images-file" accept=".zip">
+                <label class="custom-file-label" for="create-images-file">Pilih berkas...</label>
+            </div>
+
+            <button type="button" id="submit-create-subtest">Tambah</button>
+
+        </form>
     </div>
 </div>
+
+<script>
+// Bootstrap custom file input - update label with filename
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('#create-subtest-modal .custom-file-input');
+    fileInputs.forEach(function(input) {
+        input.addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'Pilih berkas...';
+            const label = e.target.nextElementSibling;
+            label.textContent = fileName;
+        });
+    });
+});
+</script>

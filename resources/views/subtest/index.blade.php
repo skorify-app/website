@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{ @asset('css/bootstrap-icons.min.css') }}">
         <style>
             .modal-contentSubtes label {
-               margin-bottom: 0; 
+               margin-bottom: 0;
             }
         </style>
     </head>
@@ -54,7 +54,7 @@
                     <div class="top-bar">
                         <input type="text" id="search" placeholder="Cari subtes">
                         <div>
-                            <a href="{{ @asset('Templat_Soal_Subtes.xltx') }}" download class="btn">
+                            <a href="{{ @asset('Templat_Soal_Subtes.xlsx') }}" download class="btn">
                                 <button>Unduh Templat</button>
                             </a>
                             <button id="create-subtest">Tambah Subtes</button>

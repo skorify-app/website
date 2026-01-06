@@ -59,6 +59,21 @@ class NotificationController extends Controller
 
         $role = $user->role ?? '';
 
+        // If AJAX request, return JSON with HTML
+        if ($request->ajax()) {
+            $listHtml = view('notifications.partials.list', compact('notifications'))->render();
+            $paginationHtml = $notifications->links('components.pagination')->render();
+            
+            return response()->json([
+                'success' => true,
+                'listHtml' => $listHtml,
+                'paginationHtml' => $paginationHtml,
+                'firstItem' => $notifications->firstItem() ?? 0,
+                'lastItem' => $notifications->lastItem() ?? 0,
+                'total' => $notifications->total(),
+            ]);
+        }
+
         return view('notifications.index', [
             'notifications' => $notifications,
             'role' => $role,
@@ -80,6 +95,11 @@ class NotificationController extends Controller
         $user = Auth::user();
         $user->unreadNotifications->markAsRead();
 
+        // If AJAX request, return JSON
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
         return redirect()->back()->with('success', 'Semua notifikasi telah ditandai dibaca.');
     }
 
@@ -89,6 +109,11 @@ class NotificationController extends Controller
         $notification = $user->notifications()->where('id', $id)->first();
         if ($notification && is_null($notification->read_at)) {
             $notification->markAsRead();
+        }
+
+        // If AJAX request, return JSON
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
         }
 
         return redirect()->back();

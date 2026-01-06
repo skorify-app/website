@@ -13,13 +13,15 @@ class SubtestChangedNotification extends Notification
     public $actorId;
     public $action;
     public $subtestName;
+    public $changes;
 
-    public function __construct(string $actor, ?string $actorId, string $action, string $subtestName)
+    public function __construct(string $actor, ?string $actorId, string $action, string $subtestName, array $changes = [])
     {
         $this->actor = $actor;
         $this->actorId = $actorId;
         $this->action = $action; // 'menambahkan'|'menghapus'|'mengedit'
         $this->subtestName = $subtestName;
+        $this->changes = $changes; // array of changes: [['field' => 'nama', 'old' => 'A', 'new' => 'B'], ...]
     }
 
     public function via($notifiable)
@@ -34,6 +36,7 @@ class SubtestChangedNotification extends Notification
             'actor_id' => $this->actorId,
             'action' => $this->action,
             'subtest' => $this->subtestName,
+            'changes' => $this->changes,
         ];
     }
 }

@@ -14,6 +14,7 @@ class Subtes extends Model
 
     public function soal()
     {
-        return $this->hasMany(Soal::class, 'subtes_id');
+        return $this->hasMany(Soal::class, 'subtest_id', 'subtest_id');
     }
+
 }
