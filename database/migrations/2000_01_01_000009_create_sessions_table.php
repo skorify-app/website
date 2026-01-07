@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->char('session_id', 128)->primary();
-            $table->char('account_id', 26);
+            $table->ulid('account_id');
 
             $table->foreign('account_id')
                 ->references('account_id')

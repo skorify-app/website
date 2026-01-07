@@ -7,6 +7,8 @@ use Illuminate\Notifications\Notifiable;
 
 class Account extends Authenticatable
 {
+    use Notifiable;
+
     protected $table = 'accounts'; // nama tabel
     protected $primaryKey = 'account_id'; // primary key
     public $incrementing = false; // karena CHAR(26) bukan auto increment

@@ -97,7 +97,7 @@ $(document).ready(function() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Users',
+                label: 'Pengerjaan',
                 data: data,
                 fill: true,
                 backgroundColor: 'rgba(37,99,235,0.06)',

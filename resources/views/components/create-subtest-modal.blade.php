@@ -21,16 +21,39 @@
             </div>
 
             <label>Ikon</label>
-            <input type="file" name="icon_file" accept=".png,.jpg,.jpeg" />
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="icon_file" id="create-icon-file" accept=".png,.jpg,.jpeg">
+                <label class="custom-file-label" for="create-icon-file">Pilih berkas...</label>
+            </div>
 
-            <label>File Soal (Excel)</label>
-            <input type="file" name="questions_file" accept=".xlsx,.xltx,.xlt" />
+            <label>Berkas Soal (Excel)</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="questions_file" id="create-questions-file" accept=".xlsx,.xltx,.xlt">
+                <label class="custom-file-label" for="create-questions-file">Pilih berkas...</label>
+            </div>
 
-            <label>File Gambar Soal (ZIP)</label>
-            <input type="file" name="images_zip" accept=".zip" />
+            <label>Berkas Gambar Soal (ZIP)</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="images_zip" id="create-images-file" accept=".zip">
+                <label class="custom-file-label" for="create-images-file">Pilih berkas...</label>
+            </div>
 
             <button type="button" id="submit-create-subtest">Tambah</button>
 
         </form>
     </div>
 </div>
+
+<script>
+// Bootstrap custom file input - update label with filename
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('#create-subtest-modal .custom-file-input');
+    fileInputs.forEach(function(input) {
+        input.addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'Pilih berkas...';
+            const label = e.target.nextElementSibling;
+            label.textContent = fileName;
+        });
+    });
+});
+</script>

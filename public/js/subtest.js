@@ -41,6 +41,47 @@ function setupDurationInputSanitizers() {
 
 document.addEventListener('DOMContentLoaded', () => {
     setupDurationInputSanitizers();
+
+    // Client-side search for subtests by name
+    const searchInput = document.getElementById('search');
+    const tbody = document.querySelector('#subtests-table tbody');
+    const NO_RESULTS_ID = 'no-results-row';
+
+    function filterSubtests() {
+        const q = (searchInput.value || '').trim().toLowerCase();
+        let anyVisible = false;
+
+        tbody.querySelectorAll('tr').forEach(tr => {
+            const id = tr.getAttribute('data-subtest-id');
+            // skip rows that are not data rows
+            if (!id) return;
+            const name = (tr.getAttribute('data-subtest-name') || '').toLowerCase();
+            if (q === '' || name.includes(q)) {
+                tr.style.display = '';
+                anyVisible = true;
+            } else {
+                tr.style.display = 'none';
+            }
+        });
+
+        const existing = document.getElementById(NO_RESULTS_ID);
+        if (!anyVisible) {
+            if (!existing) {
+                const r = document.createElement('tr');
+                r.id = NO_RESULTS_ID;
+                r.innerHTML = '<td colspan="4" class="text-center text-muted">Tidak ada subtes yang cocok</td>';
+                tbody.appendChild(r);
+            }
+        } else if (existing) {
+            existing.remove();
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterSubtests);
+        // run once on load to apply empty filter or prefilled value
+        if (searchInput.value) filterSubtests();
+    }
 });
 
 const showAlert = async(icon, title, text) => {
@@ -137,8 +178,22 @@ async function editSubtest() {
     const formData = new FormData();
     formData.append('id', id);
     formData.append('name', name);
-    formData.append('duration_seconds', durationSeconds);
+    formData.append('duration_hours', h);
+    formData.append('duration_minutes', m);
+    formData.append('duration_seconds_input', s);
     formData.append('icon', icon.files[0] ?? null);
+    
+    // Add new file uploads (optional)
+    const questionsFile = elName('edit-subtest-questions-file');
+    const imagesZip = elName('edit-subtest-images-zip');
+    
+    if (questionsFile.files[0]) {
+        formData.append('questions_file', questionsFile.files[0]);
+    }
+    
+    if (imagesZip.files[0]) {
+        formData.append('images_zip', imagesZip.files[0]);
+    }
 
     try {
         const response = await fetch(`/subtest/update`, {

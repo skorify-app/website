@@ -52,7 +52,7 @@
                     <x-page-title title="Subtes Ujian Mandiri Polibatam (UMPB)"></x-page-title>
 
                     <div class="top-bar">
-                        <input type="text" id="search" placeholder="Cari disini">
+                        <input type="text" id="search" placeholder="Cari subtes">
                         <div>
                             <a href="{{ @asset('Templat_Soal_Subtes.xlsx') }}" download class="btn">
                                 <button>Unduh Templat</button>
@@ -73,43 +73,45 @@
                         <tbody>
                         @forelse ($subtests as $subtest)
                             @php
-                                $ds = $subtest['duration_seconds'] ?? 1800;
+                                $ds = $subtest->duration_seconds ?? 1800;
                                 $h = intdiv($ds, 3600);
                                 $m = intdiv($ds % 3600, 60);
                                 $s = $ds % 60;
                                 $hms = sprintf('%02d:%02d:%02d', $h, $m, $s);
                             @endphp
                             <tr
-                                data-subtest-id="{{ $subtest['subtest_id'] }}"
-                                data-subtest-name="{{ $subtest['subtest_name'] }}"
+                                data-subtest-id="{{ $subtest->subtest_id }}"
+                                data-subtest-name="{{ $subtest->subtest_name }}"
                                 data-subtest-hours="{{ $h }}"
                                 data-subtest-minutes="{{ $m }}"
                                 data-subtest-seconds="{{ $s }}"
                             >
                                 <td>
-                                    @if($subtest['subtest_image_name'])
+                                    @if($subtest->subtest_image_name)
                                         <img
-                                            src="/images/subtest/{{ $subtest['subtest_image_name'] }}"
-                                            alt="Ikon subtes {{ $subtest['subtest_image_name'] }}"
+                                            src="/images/subtest/{{ $subtest->subtest_image_name }}"
+                                            alt="Ikon subtes {{ $subtest->subtest_image_name }}"
                                             style="height: 64px;"
                                         >
                                     @endif
                                 </td>
-                                <td>{{ $subtest['subtest_name'] }}</td>
+                                <td>{{ $subtest->subtest_name }}</td>
                                 <td>{{ $hms }} </td>
                                 <td class="actions">
-                                <button type="button" class="btn-delete bi bi-trash"></button>
-                                <button type="button" class="btn-edit bi bi-pencil-square"></button>
-
-                                <a href="{{ route('pengerjaan', $subtest['subtest_id']) }}">
-                                    <button type="button" class="btn-add bi bi-eye"></button>
-                                </a>
-                            </td>
+                                    <button class="btn-delete bi bi-trash"></button>
+                                    <button class="btn-edit bi bi-pencil-square"></button>
+                                    <a href="{{ route('pengerjaan', $subtest->subtest_id) }}">
+                                        <button class="btn-add bi bi-eye"></button>
+                                    </a>
+                                </td>
                             </tr>
                         @empty
+                            <tr><td colspan="4" class="text-center text-muted">Tidak ada subtes</td></tr>
                         @endforelse
                         </tbody>
                     </table>
+
+
 
                     <x-create-subtest-modal></x-create-subtest-modal>
                     <x-edit-subtest-modal></x-edit-subtest-modal>

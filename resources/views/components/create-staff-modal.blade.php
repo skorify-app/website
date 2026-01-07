@@ -9,7 +9,7 @@
         <label>Email</label>
         <input type="email" name="create-staff-email" placeholder="Masukkan email" />
 
-        <label>Password</label>
+        <label>Kata Sandi</label>
         <input type="password" name="create-staff-password" placeholder="Minimal 8 karakter" />
 
         <button id="submit-create-staff">Tambah</button>

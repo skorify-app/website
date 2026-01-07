@@ -7,6 +7,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubtestController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
 
@@ -78,6 +79,16 @@ Route::post('/profile', [ProfileController::class, 'update'])
 Route::post('/pengerjaan/save', [ExamController::class, 'saveAnswer'])
     ->name('pengerjaan.save')
     ->middleware('auth');
+
+// Notifications
+Route::get('/notifications', [NotificationController::class, 'index'])
+    ->name('notifications.index')->middleware('auth');
+
+Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])
+    ->name('notifications.markAllRead')->middleware('auth');
+
+Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markRead'])
+    ->name('notifications.markRead')->middleware('auth');
 
 Route::get('/pengerjaan/selesai/{score_id}', [ExamController::class, 'selesai']
 )->name('pengerjaan.selesai')
