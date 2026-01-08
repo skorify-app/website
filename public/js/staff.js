@@ -1,15 +1,17 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search');
-    const createStaffBtn = document.getElementById('create-staff');
-    const staffTable = document.getElementById('staff-table');
-    const staffTableBody = staffTable.querySelector('tbody');
-    const createStaffModal = document.getElementById('create-staff-modal');
-    const editStaffModal = document.getElementById('edit-staff-modal');
-    const submitCreateStaffBtn = document.getElementById('submit-create-staff');
-    const submitEditStaffBtn = document.getElementById('submit-edit-staff');
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search");
+    const createStaffBtn = document.getElementById("create-staff");
+    const staffTable = document.getElementById("staff-table");
+    const staffTableBody = staffTable.querySelector("tbody");
+    const createStaffModal = document.getElementById("create-staff-modal");
+    const editStaffModal = document.getElementById("edit-staff-modal");
+    const submitCreateStaffBtn = document.getElementById("submit-create-staff");
+    const submitEditStaffBtn = document.getElementById("submit-edit-staff");
 
     // Get CSRF token from meta tag
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
 
     // Store all staffs for searching
     let allStaffs = [];
@@ -17,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load staffs from table
     function loadStaffs() {
         allStaffs = [];
-        staffTableBody.querySelectorAll('tr').forEach(row => {
+        staffTableBody.querySelectorAll("tr").forEach((row) => {
             if (row.dataset.staffId) {
                 allStaffs.push({
                     id: row.dataset.staffId,
                     name: row.dataset.staffName,
                     email: row.dataset.staffEmail,
-                    element: row
+                    element: row,
                 });
             }
         });
@@ -31,42 +33,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show modal
     function showModal(modal) {
-        modal.style.display = 'flex';
-        modal.classList.add('show');
+        modal.style.display = "flex";
+        modal.classList.add("show");
     }
 
     // Hide modal
     function hideModal(modal) {
-        modal.style.display = 'none';
-        modal.classList.remove('show');
+        modal.style.display = "none";
+        modal.classList.remove("show");
     }
 
     // Modal close button
-    document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const modal = this.closest('.modal-subtes');
+    document.querySelectorAll(".close-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const modal = this.closest(".modal-subtes");
             hideModal(modal);
         });
     });
 
+    // Password visibility toggle for create modal
+    const toggleCreatePassword = document.getElementById("toggle-create-password");
+    const createPasswordInput = document.getElementById("create-staff-password");
+    const createEyeIcon = document.getElementById("create-eye-icon");
+
+    if (toggleCreatePassword) {
+        toggleCreatePassword.addEventListener("click", function () {
+            if (createPasswordInput.type === "password") {
+                createPasswordInput.type = "text";
+                createEyeIcon.classList.remove("bi-eye");
+                createEyeIcon.classList.add("bi-eye-slash");
+            } else {
+                createPasswordInput.type = "password";
+                createEyeIcon.classList.remove("bi-eye-slash");
+                createEyeIcon.classList.add("bi-eye");
+            }
+        });
+    }
+
+    // Password visibility toggle for edit modal
+    const toggleEditPassword = document.getElementById("toggle-edit-password");
+    const editPasswordInput = document.getElementById("edit-staff-password");
+    const editEyeIcon = document.getElementById("edit-eye-icon");
+
+    if (toggleEditPassword) {
+        toggleEditPassword.addEventListener("click", function () {
+            if (editPasswordInput.type === "password") {
+                editPasswordInput.type = "text";
+                editEyeIcon.classList.remove("bi-eye");
+                editEyeIcon.classList.add("bi-eye-slash");
+            } else {
+                editPasswordInput.type = "password";
+                editEyeIcon.classList.remove("bi-eye-slash");
+                editEyeIcon.classList.add("bi-eye");
+            }
+        });
+    }
+
     // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal-subtes')) {
+    window.addEventListener("click", function (event) {
+        if (event.target.classList.contains("modal-subtes")) {
             hideModal(event.target);
         }
     });
 
     // Render table
     function renderTable(staffsToShow = allStaffs) {
-        staffTableBody.innerHTML = '';
+        staffTableBody.innerHTML = "";
 
         if (staffsToShow.length === 0) {
-            staffTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Tidak ada data staff</td></tr>';
+            staffTableBody.innerHTML =
+                '<tr><td colspan="3" class="text-center text-muted">Tidak ada data staff</td></tr>';
             return;
         }
 
-        staffsToShow.forEach(staff => {
-            const row = document.createElement('tr');
+        staffsToShow.forEach((staff) => {
+            const row = document.createElement("tr");
             row.dataset.staffId = staff.id;
             row.dataset.staffName = staff.name;
             row.dataset.staffEmail = staff.email;
@@ -86,21 +127,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Attach event listeners to buttons
     function attachEventListeners() {
-        staffTableBody.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const row = this.closest('tr');
+        staffTableBody.querySelectorAll(".btn-delete").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const row = this.closest("tr");
                 const staffId = row.dataset.staffId;
                 const staffName = row.dataset.staffName;
 
                 Swal.fire({
-                    title: 'Konfirmasi Hapus',
+                    title: "Konfirmasi Hapus",
                     text: `Apakah Anda yakin ingin menghapus staff bernama ${staffName}?`,
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, Hapus',
-                    cancelButtonText: 'Batal'
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, Hapus",
+                    cancelButtonText: "Batal",
                 }).then((result) => {
                     if (result.isConfirmed) {
                         deleteStaff(staffId);
@@ -109,9 +150,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        staffTableBody.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const row = this.closest('tr');
+        staffTableBody.querySelectorAll(".btn-edit").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const row = this.closest("tr");
                 const staffId = row.dataset.staffId;
                 const staffName = row.dataset.staffName;
                 const staffEmail = row.dataset.staffEmail;
@@ -122,75 +163,119 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Search functionality
-    searchInput.addEventListener('keyup', function() {
+    searchInput.addEventListener("keyup", function () {
         const searchTerm = this.value.toLowerCase();
-        const filtered = allStaffs.filter(staff =>
-            staff.name.toLowerCase().includes(searchTerm) ||
-            staff.email.toLowerCase().includes(searchTerm)
+        const filtered = allStaffs.filter(
+            (staff) =>
+                staff.name.toLowerCase().includes(searchTerm) ||
+                staff.email.toLowerCase().includes(searchTerm)
         );
         renderTable(filtered);
     });
 
     // Open create modal
     createStaffBtn.onclick = () => {
-        document.querySelector('input[name="create-staff-name"]').value = '';
-        document.querySelector('input[name="create-staff-email"]').value = '';
-        document.querySelector('input[name="create-staff-password"]').value = '';
+        document.querySelector('input[name="create-staff-name"]').value = "";
+        document.querySelector('input[name="create-staff-email"]').value = "";
+        document.querySelector('input[name="create-staff-password"]').value =
+            "";
         showModal(createStaffModal);
-    }
+    };
 
     // Submit create staff
-    submitCreateStaffBtn.addEventListener('click', async function() {
-        const fullName = document.querySelector('input[name="create-staff-name"]').value.trim();
-        const email = document.querySelector('input[name="create-staff-email"]').value.trim();
-        const password = document.querySelector('input[name="create-staff-password"]').value.trim();
+    submitCreateStaffBtn.addEventListener("click", async function () {
+        const fullName = document
+            .querySelector('input[name="create-staff-name"]')
+            .value.trim();
+        const email = document
+            .querySelector('input[name="create-staff-email"]')
+            .value.trim();
+        const password = document
+            .querySelector('input[name="create-staff-password"]')
+            .value.trim();
 
         // Validation
         if (!fullName) {
-            Swal.fire('Error', 'Nama lengkap tidak boleh kosong', 'error');
+            Swal.fire("Error", "Nama lengkap tidak boleh kosong", "error");
             return;
         }
         if (!email) {
-            Swal.fire('Error', 'Email tidak boleh kosong', 'error');
+            Swal.fire("Error", "Email tidak boleh kosong", "error");
             return;
         }
         if (!password) {
-            Swal.fire('Error', 'Password tidak boleh kosong', 'error');
+            Swal.fire("Error", "Password tidak boleh kosong", "error");
             return;
         }
-        if (password.length < 8) {
-            Swal.fire('Error', 'Password minimal 8 karakter', 'error');
+
+        // Level 2 Password Validation
+        if (password.length < 16) {
+            Swal.fire("Error", "Password minimal 16 karakter", "error");
+            return;
+        }
+        if (!/[A-Z]/.test(password)) {
+            Swal.fire(
+                "Error",
+                "Password harus mengandung minimal 1 huruf besar",
+                "error"
+            );
+            return;
+        }
+        if (!/[a-z]/.test(password)) {
+            Swal.fire(
+                "Error",
+                "Password harus mengandung minimal 1 huruf kecil",
+                "error"
+            );
+            return;
+        }
+        if (!/[0-9]/.test(password)) {
+            Swal.fire(
+                "Error",
+                "Password harus mengandung minimal 1 angka",
+                "error"
+            );
+            return;
+        }
+        if (!/[@$!%*?&#^()_+={}\[\]:;"'<>,.\/\\|-]/.test(password)) {
+            Swal.fire(
+                "Error",
+                "Password harus mengandung minimal 1 simbol khusus (@$!%*?&#^()_+={}[]:;\"'<>,./\\|-)",
+                "error"
+            );
             return;
         }
 
         const formData = new FormData();
-        formData.append('full_name', fullName);
-        formData.append('email', email);
-        formData.append('password', password);
+        formData.append("full_name", fullName);
+        formData.append("email", email);
+        formData.append("password", password);
 
         try {
-            const res = await fetch('/staff', {
-                method: 'POST',
+            const res = await fetch("/staff", {
+                method: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken
+                    "X-CSRF-TOKEN": csrfToken,
                 },
-                body: formData
+                body: formData,
             });
 
             if (!res.ok) {
                 const err = await res.json().catch(() => null);
-                const message = err?.errors ? Object.values(err.errors)[0][0] : 'Gagal menambahkan staff.';
-                Swal.fire('Error', message, 'error');
+                const message = err?.errors
+                    ? Object.values(err.errors)[0][0]
+                    : "Gagal menambahkan staff.";
+                Swal.fire("Error", message, "error");
                 return;
             }
 
             const data = await res.json();
             if (data.success) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses!',
+                    icon: "success",
+                    title: "Sukses!",
                     text: data.message,
-                    confirmButtonColor: '#3085d6'
+                    confirmButtonColor: "#3085d6",
                 }).then(() => {
                     hideModal(createStaffModal);
                     location.reload();
@@ -198,71 +283,123 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error(error);
-            Swal.fire('Error', 'Terjadi kesalahan saat menambahkan staff.', 'error');
+            Swal.fire(
+                "Error",
+                "Terjadi kesalahan saat menambahkan staff.",
+                "error"
+            );
         }
     });
 
     // Open edit modal
     function openEditModal(staffId, staffName, staffEmail) {
         document.querySelector('input[name="edit-staff-id"]').value = staffId;
-        document.querySelector('input[name="edit-staff-name"]').value = staffName;
-        document.querySelector('input[name="edit-staff-email"]').value = staffEmail;
-        document.querySelector('input[name="edit-staff-password"]').value = '';
+        document.querySelector('input[name="edit-staff-name"]').value =
+            staffName;
+        document.querySelector('input[name="edit-staff-email"]').value =
+            staffEmail;
+        document.querySelector('input[name="edit-staff-password"]').value = "";
         showModal(editStaffModal);
     }
 
     // Submit edit staff
-    submitEditStaffBtn.addEventListener('click', async function() {
-        const staffId = document.querySelector('input[name="edit-staff-id"]').value;
-        const fullName = document.querySelector('input[name="edit-staff-name"]').value.trim();
-        const email = document.querySelector('input[name="edit-staff-email"]').value.trim();
-        const password = document.querySelector('input[name="edit-staff-password"]').value.trim();
+    submitEditStaffBtn.addEventListener("click", async function () {
+        const staffId = document.querySelector(
+            'input[name="edit-staff-id"]'
+        ).value;
+        const fullName = document
+            .querySelector('input[name="edit-staff-name"]')
+            .value.trim();
+        const email = document
+            .querySelector('input[name="edit-staff-email"]')
+            .value.trim();
+        const password = document
+            .querySelector('input[name="edit-staff-password"]')
+            .value.trim();
 
         // Validation
         if (!fullName) {
-            Swal.fire('Error', 'Nama lengkap tidak boleh kosong', 'error');
+            Swal.fire("Error", "Nama lengkap tidak boleh kosong", "error");
             return;
         }
         if (!email) {
-            Swal.fire('Error', 'Email tidak boleh kosong', 'error');
+            Swal.fire("Error", "Email tidak boleh kosong", "error");
             return;
         }
-        if (password && password.length < 8) {
-            Swal.fire('Error', 'Password minimal 8 karakter', 'error');
-            return;
+
+        // Level 2 Password Validation (only if password is provided)
+        if (password) {
+            if (password.length < 16) {
+                Swal.fire("Error", "Password minimal 16 karakter", "error");
+                return;
+            }
+            if (!/[A-Z]/.test(password)) {
+                Swal.fire(
+                    "Error",
+                    "Password harus mengandung minimal 1 huruf besar",
+                    "error"
+                );
+                return;
+            }
+            if (!/[a-z]/.test(password)) {
+                Swal.fire(
+                    "Error",
+                    "Password harus mengandung minimal 1 huruf kecil",
+                    "error"
+                );
+                return;
+            }
+            if (!/[0-9]/.test(password)) {
+                Swal.fire(
+                    "Error",
+                    "Password harus mengandung minimal 1 angka",
+                    "error"
+                );
+                return;
+            }
+            if (!/[@$!%*?&#^()_+={}\[\]:;"'<>,.\/\\|-]/.test(password)) {
+                Swal.fire(
+                    "Error",
+                    "Password harus mengandung minimal 1 simbol khusus (@$!%*?&#^()_+={}[]:;\"'<>,./\\|-)",
+                    "error"
+                );
+                return;
+            }
         }
 
         const formData = new FormData();
-        formData.append('account_id', staffId);
-        formData.append('full_name', fullName);
-        formData.append('email', email);
+        formData.append("account_id", staffId);
+        formData.append("full_name", fullName);
+        formData.append("email", email);
         if (password) {
-            formData.append('password', password);
+            formData.append("password", password);
         }
 
         try {
-            const res = await fetch('/staff/update', {
-                method: 'POST',
+            const res = await fetch("/staff/update", {
+                method: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken
+                    "X-CSRF-TOKEN": csrfToken,
                 },
-                body: formData
+                body: formData,
             });
 
             if (!res.ok) {
                 const err = await res.json().catch(() => null);
-                const message = err?.errors ? Object.values(err.errors)[0][0] : 'Gagal mengupdate staff.';
-                Swal.fire('Error', message, 'error');
+                const message = err?.errors
+                    ? Object.values(err.errors)[0][0]
+                    : "Gagal mengupdate staff.";
+                Swal.fire("Error", message, "error");
                 return;
             }
 
             const data = await res.json();
             if (data.success) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses!',
+                    icon: "success",
+                    title: "Sukses!",
                     text: data.message,
-                    confirmButtonColor: '#3085d6'
+                    confirmButtonColor: "#3085d6",
                 }).then(() => {
                     hideModal(editStaffModal);
                     location.reload();
@@ -270,7 +407,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error(error);
-            Swal.fire('Error', 'Terjadi kesalahan saat mengupdate staff.', 'error');
+            Swal.fire(
+                "Error",
+                "Terjadi kesalahan saat mengupdate staff.",
+                "error"
+            );
         }
     });
 
@@ -278,33 +419,37 @@ document.addEventListener('DOMContentLoaded', function() {
     async function deleteStaff(staffId) {
         try {
             const res = await fetch(`/staff/${staffId}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                }
+                    "X-CSRF-TOKEN": csrfToken,
+                },
             });
 
             if (!res.ok) {
                 const err = await res.json().catch(() => null);
-                const message = err?.message || 'Gagal menghapus staff.';
-                Swal.fire('Error', message, 'error');
+                const message = err?.message || "Gagal menghapus staff.";
+                Swal.fire("Error", message, "error");
                 return;
             }
 
             const data = await res.json();
             if (data.success) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses!',
+                    icon: "success",
+                    title: "Sukses!",
                     text: data.message,
-                    confirmButtonColor: '#3085d6'
+                    confirmButtonColor: "#3085d6",
                 }).then(() => {
                     location.reload();
                 });
             }
         } catch (error) {
             console.error(error);
-            Swal.fire('Error', 'Terjadi kesalahan saat menghapus staff.', 'error');
+            Swal.fire(
+                "Error",
+                "Terjadi kesalahan saat menghapus staff.",
+                "error"
+            );
         }
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Account;
+use App\Rules\PasswordLevel2Rule;
 use Symfony\Component\Uid\Ulid;
 
 class StaffController extends Controller
@@ -35,7 +36,7 @@ class StaffController extends Controller
         $data = $request->validate([
             'full_name' => 'required|string|max:191',
             'email' => 'required|email|max:191|unique:accounts,email',
-            'password' => 'required|string|min:8|max:63',
+            'password' => ['required', 'string', 'max:63', new PasswordLevel2Rule()],
         ]);
 
         $account = new Account();
@@ -68,7 +69,7 @@ class StaffController extends Controller
             'account_id' => 'required|string|size:26',
             'full_name' => 'required|string|max:191',
             'email' => ['required', 'email', 'max:191', 'unique:accounts,email,' . $staff->account_id . ',account_id'],
-            'password' => 'nullable|string|min:8',
+            'password' => ['nullable', 'string', new PasswordLevel2Rule()],
         ]);
 
         $staff->full_name = $data['full_name'];
