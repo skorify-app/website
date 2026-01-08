@@ -13,7 +13,7 @@ class PasswordLevel2Rule implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         // Minimal 16 karakter
         if (strlen($value) < 16) {
@@ -48,7 +48,7 @@ class PasswordLevel2Rule implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Password harus minimal 16 karakter dan mengandung minimal 1 huruf besar, 1 huruf kecil, 1 angka, dan 1 simbol khusus (@$!%*?&#^()_+={}[]:;"\'<>,./\\|-).';
     }
