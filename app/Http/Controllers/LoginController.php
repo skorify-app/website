@@ -14,10 +14,18 @@ class LoginController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            "email"=> "required|email",
-            "password"=> "required|min:8|max:128"
-        ]);
+        // Manual validation to show custom error message
+        if (!$request->email || !filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            return Redirect::back()
+                ->with('error', 'Email atau kata sandi anda salah')
+                ->withInput($request->only('email'));
+        }
+
+        if (!$request->password || strlen($request->password) < 3) {
+            return Redirect::back()
+                ->with('error', 'Email atau kata sandi anda salah')
+                ->withInput($request->only('email'));
+        }
 
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
@@ -25,7 +33,7 @@ class LoginController extends Controller
         }
 
         return Redirect::back()
-            ->withErrors(['msg' => 'Email atau password Anda salah.'])
+            ->with('error', 'Email atau kata sandi anda salah')
             ->withInput($request->only('email'));
     }
 
@@ -39,7 +47,7 @@ class LoginController extends Controller
         $user = Account::where("email", $request->input('email'))->first();
 
         if (!$user) {
-            return back()->with('error', 'Email atau role salah');
+            return back()->with('error', 'Email atau kata sandi anda salah');
         }
 
         if ($user->role === 'PARTICIPANT') {
@@ -47,7 +55,7 @@ class LoginController extends Controller
         }
 
         if(!hash::check($request->input('password'), $user->password)){
-            return back()->with('error', 'Password Anda salah, coba lagi');
+            return back()->with('error', 'Email atau kata sandi anda salah');
         }
 
         $request->session()->regenerate();
