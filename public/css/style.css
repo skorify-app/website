@@ -10889,8 +10889,8 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 [data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .quixnav {
   width: 3.75rem;
-  overflow: visible;
-  position: absolute; }
+  overflow: hidden; /* cegah isi keluar */
+}
   [data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .quixnav .nav-text {
     display: none; }
   [data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .quixnav .slimScrollDiv,
