@@ -14,6 +14,7 @@ use App\Http\Controllers\ExamController;
 
 
 # Main page
+# Main page
 Route::get('/', [IndexController::class, 'index'])->name('index');
 
 # Log in routes
@@ -22,77 +23,50 @@ Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 # Log out route
 Route::get('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
-# Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard')->middleware('auth');
+# Protected Routes Group
+Route::middleware(['auth'])->group(function () {
+    # Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-# Subtest
-Route::get('/subtest', [SubtestController::class, 'index'])
-    ->name('subtest.index')->middleware('auth');
+    # Chart Data API
+    Route::get('/admin/chart-data/{year}', [DashboardController::class, 'getChartData'])->name('admin.chartData');
+    Route::get('/admin/recap-stats', [DashboardController::class, 'getRecapStats'])->name('admin.recapStats');
 
-Route::post('/subtest', [SubtestController::class, 'store'])
-    ->name('subtest.store')->middleware('auth');
+    # Subtest
+    Route::get('/subtest', [SubtestController::class, 'index'])->name('subtest.index');
+    Route::post('/subtest', [SubtestController::class, 'store'])->name('subtest.store');
+    Route::delete('/subtest/{subtest_id}', [SubtestController::class, 'delete'])->name('subtest.delete');
+    Route::post('/subtest/update', [SubtestController::class, 'update'])->name('subtest.update');
 
-Route::delete('/subtest/{subtest_id}', [SubtestController::class, 'delete'])
-    ->name('subtest.delete')->middleware('auth');
+    # Manage staff accounts
+    Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
+    Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
+    Route::post('/staff/update', [StaffController::class, 'update'])->name('staff.update');
+    Route::delete('/staff/{staff_id}', [StaffController::class, 'destroy'])->name('staff.destroy');
 
-Route::post('/subtest/update', [SubtestController::class, 'update'])
-    ->name('subtest.update')->middleware('auth');
+    # Pengerjaan Soal (Staff) - Secured
+    Route::get('/staff/pengerjaan', function () {
+        return view('Staff.pengerjaan');
+    });
 
-# Manage staff accounts
-Route::get('/staff', [StaffController::class, 'index'])
-    ->name('staff.index')->middleware('auth');
+    # Pengerjaan Soal (Admin)
+    Route::get('/admin/pengerjaan/{subtest_id}', [ExamController::class, 'index'])->name('pengerjaan');
 
-Route::post('/staff', [StaffController::class, 'store'])
-    ->name('staff.store')->middleware('auth');
+    # Tambah Admin Page - Secured
+    Route::get('/admin/tambahadmin', function () {
+        return view('Admin.tambahadmin');
+    });
 
-Route::post('/staff/update', [StaffController::class, 'update'])
-    ->name('staff.update')->middleware('auth');
+    # Profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-Route::delete('/staff/{staff_id}', [StaffController::class, 'destroy'])
-    ->name('staff.destroy')->middleware('auth');
+    # Exam Execution & Saving
+    Route::post('/pengerjaan/save', [ExamController::class, 'saveAnswer'])->name('pengerjaan.save');
+    Route::get('/pengerjaan/selesai/{score_id}', [ExamController::class, 'selesai'])->name('pengerjaan.selesai');
 
-
-
-// Pengerjaan Soal (Staff)
- Route::get('/staff/pengerjaan', function () {
-    return view('Staff.pengerjaan');
+    # Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
 });
-
-// Pengerjaan Soal (Admin)
-
-Route::get('/admin/pengerjaan/{subtest_id}', [ExamController::class, 'index'])
-    ->name('pengerjaan')
-    ->middleware('auth');
-
-
-Route::get('/admin/tambahadmin', function () {
-    return view('Admin.tambahadmin');
-});
-
-Route::get('/profile', [ProfileController::class, 'index'])
-    ->name('profile.index')->middleware('auth');
-
-Route::post('/profile', [ProfileController::class, 'update'])
-    ->name('profile.update')->middleware('auth');
-
-Route::post('/pengerjaan/save', [ExamController::class, 'saveAnswer'])
-    ->name('pengerjaan.save')
-    ->middleware('auth');
-
-// Notifications
-Route::get('/notifications', [NotificationController::class, 'index'])
-    ->name('notifications.index')->middleware('auth');
-
-Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])
-    ->name('notifications.markAllRead')->middleware('auth');
-
-Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markRead'])
-    ->name('notifications.markRead')->middleware('auth');
-
-Route::get('/pengerjaan/selesai/{score_id}', [ExamController::class, 'selesai']
-)->name('pengerjaan.selesai')
- ->middleware('auth');
-
-// Subtes Routes
-// Route::resource('subtes', SubtesController::class);

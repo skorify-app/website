@@ -333,7 +333,18 @@ class SubtestController extends Controller
                 $subtest->subtest_image_name = $icon_file_name;
             }
 
+            // Check if there are any changes before proceeding
+            $hasFileChanges = $request->hasFile('icon') || $request->hasFile('questions_file') || $request->hasFile('images_zip');
+            
+            if (empty($changes) && !$hasFileChanges) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada perubahan yang dilakukan.'
+                ], 200);
+            }
+
             $subtest->save();
+
 
             /* ===============================
              * PROSES FILE SOAL & GAMBAR (JIKA ADA)

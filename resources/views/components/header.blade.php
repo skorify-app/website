@@ -15,7 +15,7 @@
                                     <i class="mdi mdi-bell"></i>
                                     @php $hasUnread = auth()->user() ? auth()->user()->unreadNotifications->count() > 0 : false; @endphp
                                     @if($hasUnread)
-                                        <span class="notification-dot" style="position: absolute; top: 17px; right: 2px; display: block; width: 10px; height: 10px; background: #ff3b30; border-radius: 50%; border: 2px solid #fff;"></span>
+                                        <span id="notification-badge" class="notification-dot" style="position: absolute; top: 17px; right: 2px; display: block; width: 10px; height: 10px; background: #ff3b30; border-radius: 50%; border: 2px solid #fff;"></span>
                                     @endif
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">

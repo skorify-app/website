@@ -14,7 +14,38 @@
     <link href="{{ asset('css/dropdown.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
 
+    <!-- Custom Styles for Recap -->
+    <style>
+        .recap-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background-color: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .recap-icon.bank-icon {
+            background-color: #d1fae5;
+        }
+        .stats-recap .recap-item {
+            min-width: 200px;
+        }
+        /* Force white background for Flatpickr readonly inputs */
+        .recap-input,
+        .recap-input[readonly],
+        .flatpickr-input[readonly] {
+            background-color: #ffffff !important;
+            opacity: 1 !important; /* Ensure no opacity reduction */
+            font-size: 14px !important;
+        }
+    </style>
     <!-- Required vendors (moved to bottom to avoid early execution) -->
 </head>
 <body>
@@ -55,9 +86,20 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card p-3">
-                        <h5 class="mb-3">Statistik Pengguna</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Statistik Pengguna</h5>
+                            <div class="form-group mb-0">
+                                <select id="yearFilter" class="form-control form-control-sm" style="width: auto; min-width: 100px;">
+                                    @foreach($availableYears as $year)
+                                        <option value="{{ $year }}" {{ $year == $currentYear ? 'selected' : '' }}>
+                                            {{ $year }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="chart-wrap">
-                            <canvas id="userStatsChart" height="100"></canvas>
+                            <canvas id="userStatsChart" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -77,7 +119,7 @@
                                         </div>
                                         <div class="ml-3">
                                             <div class="small text-muted">Simulasi Ujian Mandiri Polibatam (UMPB)</div>
-                                            <div class="h4 mb-0">{{ $recap1 ?? 0 }}</div>
+                                            <div class="h4 mb-0" id="recap1-count">{{ $recap1 ?? 0 }}</div>
                                         </div>
                                     </div>
 
@@ -87,17 +129,36 @@
                                         </div>
                                         <div class="ml-3">
                                             <div class="small text-muted">Bank Soal UMPB</div>
-                                            <div class="h4 mb-0">{{ $recap2 ?? 0 }}</div>
+                                            <div class="h4 mb-0" id="recap2-count">{{ $recap2 ?? 0 }}</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="text-right" style="min-width:180px;">
-                                <select class="form-control month-selector mb-2" style="width:160px;">
-                                    <option>Agustus</option>
-                                </select>
-                                <div><a href="#" class="small text-muted" data-toggle="modal" data-target="#statisticsDetailModal">Lihat detail</a></div>
+                            <div class="text-right" style="min-width:220px;">
+                                <div class="d-flex align-items-center justify-content-end" style="gap:5px;">
+                                    <select id="recapFilterType" class="form-control mb-0" style="width:100px; height:35px; font-size:13px;">
+                                        <option value="daily">Harian</option>
+                                        <option value="monthly">Bulanan</option>
+                                        <option value="yearly" selected>Tahunan</option>
+                                    </select>
+                                    
+                                    <!-- Inputs for each type -->
+                                    <div id="wrapperDaily" style="display:none;">
+                                        <input type="text" id="recapFilterDaily" class="form-control mb-0 recap-input" placeholder="Pilih Tanggal" style="width:130px; height:35px; font-size:13px; background-color: #fff;">
+                                    </div>
+                                    <div id="wrapperMonthly" style="display:none;">
+                                        <input type="text" id="recapFilterMonthly" class="form-control mb-0 recap-input" placeholder="Pilih Bulan" style="width:130px; height:35px; font-size:13px; background-color: #fff;">
+                                    </div>
+                                    <div id="wrapperYearly">
+                                        <select id="recapFilterYearly" class="form-control mb-0 recap-input" style="width:100px; height:35px; font-size:13px;">
+                                            @foreach($availableYears as $year)
+                                                <option value="{{ $year }}" {{ $year == $currentYear ? 'selected' : '' }}>{{ $year }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-1"><a href="#" class="small text-muted" data-toggle="modal" data-target="#statisticsDetailModal">Lihat detail</a></div>
                             </div>
                         </div>
                     </div>
@@ -111,7 +172,7 @@
                     link="/subtest"
                     icon="mdi-clipboard-text"
                     icon-color="#001D39"
-                    description="Tambah, edit atau hapus subtest"
+                    description="Tambah, edit atau hapus subtes"
                 ></x-bottom-nav>
 
                 <x-bottom-nav
@@ -127,7 +188,7 @@
                     link="/profile"
                     icon="mdi-cog-outline"
                     iconColor="#f59e0b"
-                    description="Ubah profil dan kata sandi"
+                    description="Ubah nama, email dan kata sandi"
                 ></x-bottom-nav>   
             </div>
 
@@ -155,7 +216,10 @@
 <script>
     window.dashboardData = {
         labels: @json($chartLabels ?? []),
-        data: @json($chartData ?? [])
+        data: @json($chartData ?? []),
+        monthlyStatsLabels: @json($monthlyStatsLabels ?? []),
+        monthlyStatsLabelsWithYear: @json($monthlyStatsLabelsWithYear ?? []),
+        monthlyStatsData: @json($monthlyStatsData ?? [])
     };
 </script>
 
@@ -166,7 +230,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="statisticsDetailModalLabel">Detail statistics recap</h5>
+                <h5 class="modal-title" id="statisticsDetailModalLabel">Detail Rekap Statistik</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -182,9 +246,28 @@
                         </div>
                     </div>
                     <div class="col-md-3 text-right">
-                        <select id="modalMonthSelector" class="form-control">
-                            <option>Agustus</option>
-                        </select>
+                        <div class="d-flex align-items-center justify-content-end" style="gap:5px;">
+                            <select id="modalFilterType" class="form-control mb-0" style="width:100px; height:35px; font-size:13px;">
+                                <option value="daily">Harian</option>
+                                <option value="monthly">Bulanan</option>
+                                <option value="yearly" selected>Tahunan</option>
+                            </select>
+                            
+                            <!-- Inputs for each type in Modal -->
+                            <div id="wrapperModalDaily" style="display:none;">
+                                <input type="text" id="modalFilterDaily" class="form-control mb-0 recap-input" placeholder="Pilih Tanggal" style="width:130px; height:35px; font-size:13px; background-color: #fff;">
+                            </div>
+                            <div id="wrapperModalMonthly" style="display:none;">
+                                <input type="text" id="modalFilterMonthly" class="form-control mb-0 recap-input" placeholder="Pilih Bulan" style="width:130px; height:35px; font-size:13px; background-color: #fff;">
+                            </div>
+                            <div id="wrapperModalYearly">
+                                <select id="modalFilterYearly" class="form-control mb-0 recap-input" style="width:100px; height:35px; font-size:13px;">
+                                    @foreach($availableYears as $year)
+                                        <option value="{{ $year }}" {{ $year == $currentYear ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -303,13 +386,40 @@
 
 <script>
     // search inside modal
+        // search inside modal with "No Results" handling
     $(document).ready(function() {
-        $('#modalSearchInput').on('keyup', function() {
-            var value = $(this).val().toLowerCase();
-            $('#modalSubjectsContainer .subject-card').filter(function() {
+        const searchInput = $('#modalSearchInput');
+
+        function performSearch() {
+            var value = searchInput.val().toLowerCase();
+            var cards = $('#modalSubjectsContainer .subject-card');
+            
+            cards.filter(function() {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
-        });
+
+            // Check if any cards are visible
+            var visibleCount = cards.filter(':visible').length;
+            var noResultsMsg = $('#no-search-results-admin');
+            
+            if (visibleCount === 0) {
+                if (noResultsMsg.length === 0) {
+                    $("#modalSubjectsContainer").append('<div id="no-search-results-admin" class="col-12 text-center text-muted mt-5"><h5>Subtes tidak ditemukan</h5></div>');
+                } else {
+                    noResultsMsg.show();
+                }
+            } else {
+                if (noResultsMsg.length > 0) {
+                    noResultsMsg.hide();
+                }
+            }
+        }
+
+        searchInput.on('keyup', performSearch);
+        
+        // Search button click
+        $('.input-group-append button').on('click', performSearch);
+
 
         // open subject detail when a subject-card inside the statistics modal is clicked
         $(document).on('click', '#statisticsDetailModal .subject-card', function (e) {
@@ -326,6 +436,293 @@
             $('#subjectDetailCount').text(countText);
 
             $('#subjectDetailModal').modal('show');
+        });
+    });
+    
+    // --- RECAP STATISTICS FILTER ---
+    $(document).ready(function() {
+        const recapFilterType = $('#recapFilterType');
+        const recapWrappers = {
+            daily: $('#wrapperDaily'),
+            monthly: $('#wrapperMonthly'),
+            yearly: $('#wrapperYearly')
+        };
+        const recapInputs = {
+            daily: $('#recapFilterDaily'),
+            monthly: $('#recapFilterMonthly'),
+            yearly: $('#recapFilterYearly')
+        };
+        
+        // Initialize Default Dates if empty
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+
+        // Initialize Flatpickr for Daily
+        const dailyPicker = flatpickr("#recapFilterDaily", {
+            locale: "id",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "j F Y",
+            defaultDate: `${yyyy}-${mm}-${dd}`,
+            onChange: function(selectedDates, dateStr, instance) {
+                fetchRecapData(); // Trigger fetch immediately on change
+            }
+        });
+
+        // Initialize Flatpickr for Monthly
+        const monthlyPicker = flatpickr("#recapFilterMonthly", {
+            locale: "id",
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: false, // Use full month names (Januari, etc.)
+                    dateFormat: "Y-m", // Value sent to server
+                    altFormat: "F Y", // Displayed value (Januari 2026)
+                    theme: "light"
+                })
+            ],
+            defaultDate: `${yyyy}-${mm}`,
+            onChange: function(selectedDates, dateStr, instance) {
+                fetchRecapData();
+            }
+        });
+
+        // if (!recapInputs.daily.val()) recapInputs.daily.val(`${yyyy}-${mm}-${dd}`); // Handled by defaultDate
+        // if (!recapInputs.monthly.val()) recapInputs.monthly.val(`${yyyy}-${mm}`); // Handled by defaultDate
+
+        function updateRecapVisibility() {
+            const type = recapFilterType.val();
+            // Hide all wrappers first
+            Object.values(recapWrappers).forEach(wrapper => wrapper.hide());
+            // Show selected wrapper
+            if (recapWrappers[type]) recapWrappers[type].show();
+            
+            fetchRecapData();
+        }
+
+        function fetchRecapData() {
+            const type = recapFilterType.val();
+            let value = '';
+            
+            if (recapInputs[type]) {
+                value = recapInputs[type].val();
+            }
+
+            if (!value) return;
+
+            // Show loading state (optional)
+            $('#recap1-count, #recap2-count').css('opacity', '0.5');
+
+            $.ajax({
+                url: '/admin/recap-stats',
+                method: 'GET',
+                data: { type: type, value: value },
+                success: function(response) {
+                    $('#recap1-count').text(response.recap1).css('opacity', '1');
+                    $('#recap2-count').text(response.recap2).css('opacity', '1');
+                    
+                    // --- UPDATE MODAL CONTENT ---
+                    if (response.details) {
+                        const container = $('#modalSubjectsContainer');
+                        container.empty();
+                        
+                        // Image mapping fallback (lower case keys for safety)
+                        const imageMap = {
+                            'matematika': 'math.png',
+                            'mtk': 'math.png',
+                            'bahasa indonesia': 'indo.png',
+                            'sains': 'science.png',
+                            'bahasa inggris': 'english.png',
+                            'computational thinking': 'computational.png'
+                        };
+
+                        response.details.forEach(detail => {
+                            let imgPath;
+                            
+                            if (detail.subtest_image_name) {
+                                // Uploaded icon (stored in public/images/subtest/)
+                                imgPath = `/images/subtest/${detail.subtest_image_name}`;
+                            } else {
+                                // Fallback/Default icon (stored in public/images/subjects/)
+                                const lowerName = (detail.subtest_name || '').toLowerCase();
+                                const mapName = imageMap[lowerName] || 'math.png'; 
+                                imgPath = `/images/subjects/${mapName}`;
+                            }
+                            
+                            const cardHtml = `
+                                <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="${detail.subtest_name}">
+                                    <div class="card h-100">
+                                        <div class="card-body d-flex align-items-center">
+                                            <div class="subject-icon mr-3">
+                                                <img src="${imgPath}" alt="${detail.subtest_name}" style="width:60px;height:60px;object-fit:contain;" onerror="this.src='/images/subjects/math.png'">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">${detail.subtest_name}</h6>
+                                                <small class="text-muted">${detail.count} Pengerjaan</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            container.append(cardHtml);
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    console.error("Failed to fetch recap stats:", xhr);
+                    $('#recap1-count, #recap2-count').css('opacity', '1');
+                }
+            });
+        }
+
+        recapFilterType.on('change', updateRecapVisibility);
+        
+        Object.values(recapInputs).forEach(input => {
+            input.on('change', fetchRecapData);
+        });
+
+        // Trigger initial state for Recap Widget
+        updateRecapVisibility();
+
+        /* =========================================
+         * MODAL FILTER LOGIC (INDEPENDENT)
+         * ========================================= */
+        const modalFilterType = $('#modalFilterType');
+        const modalWrappers = {
+            daily: $('#wrapperModalDaily'),
+            monthly: $('#wrapperModalMonthly'),
+            yearly: $('#wrapperModalYearly')
+        };
+        const modalInputs = {
+            daily: $('#modalFilterDaily'),
+            monthly: $('#modalFilterMonthly'),
+            yearly: $('#modalFilterYearly')
+        };
+
+        // Initialize Modal Defaults
+        if (!modalInputs.daily.val()) modalInputs.daily.val(`${yyyy}-${mm}-${dd}`);
+        // Monthly managed by Flatpickr defaultDate
+
+        // Initialize Flatpickr for Modal Daily
+        flatpickr("#modalFilterDaily", {
+            locale: "id",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "j F Y",
+            defaultDate: `${yyyy}-${mm}-${dd}`,
+            onChange: function(selectedDates, dateStr, instance) {
+                fetchModalData();
+            }
+        });
+
+        // Initialize Flatpickr for Modal Monthly
+        flatpickr("#modalFilterMonthly", {
+            locale: "id",
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: false,
+                    dateFormat: "Y-m",
+                    altFormat: "F Y",
+                    theme: "light"
+                })
+            ],
+            defaultDate: `${yyyy}-${mm}`,
+            onChange: function(selectedDates, dateStr, instance) {
+                fetchModalData();
+            }
+        });
+
+        function updateModalVisibility() {
+            const type = modalFilterType.val();
+            Object.values(modalWrappers).forEach(wrapper => wrapper.hide());
+            if (modalWrappers[type]) modalWrappers[type].show();
+            fetchModalData();
+        }
+
+        function fetchModalData() {
+            const type = modalFilterType.val();
+            let value = '';
+            if (modalInputs[type]) value = modalInputs[type].val();
+            if (!value) return;
+
+            // Loading state for modal container
+            const container = $('#modalSubjectsContainer');
+            container.css('opacity', '0.5');
+
+            $.ajax({
+                url: '/admin/recap-stats', // Re-use same endpoint
+                method: 'GET',
+                data: { type: type, value: value },
+                success: function(response) {
+                    container.css('opacity', '1');
+                    container.empty();
+                    
+                    if (response.details && response.details.length > 0) {
+                        const imageMap = {
+                            'matematika': 'math.png',
+                            'mtk': 'math.png',
+                            'bahasa indonesia': 'indo.png',
+                            'sains': 'science.png',
+                            'bahasa inggris': 'english.png',
+                            'computational thinking': 'computational.png'
+                        };
+
+                        response.details.forEach(detail => {
+                            let imgPath;
+                            if (detail.subtest_image_name) {
+                                imgPath = `/images/subtest/${detail.subtest_image_name}`;
+                            } else {
+                                const lowerName = (detail.subtest_name || '').toLowerCase();
+                                const mapName = imageMap[lowerName] || 'math.png'; 
+                                imgPath = `/images/subjects/${mapName}`;
+                            }
+                            
+                            const cardHtml = `
+                                <div class="col-md-6 col-lg-4 mb-4 subject-card" data-subject="${detail.subtest_name}">
+                                    <div class="card h-100">
+                                        <div class="card-body d-flex align-items-center">
+                                            <div class="subject-icon mr-3">
+                                                <img src="${imgPath}" alt="${detail.subtest_name}" style="width:60px;height:60px;object-fit:contain;" onerror="this.src='/images/subjects/math.png'">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">${detail.subtest_name}</h6>
+                                                <small class="text-muted">${detail.count} Pengerjaan</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            container.append(cardHtml);
+                        });
+                    } else {
+                        container.html('<div class="col-12 text-center text-muted">Tidak ada data untuk periode ini</div>');
+                    }
+                },
+                error: function(xhr) {
+                    console.error("Failed to fetch modal stats:", xhr);
+                    container.css('opacity', '1');
+                }
+            });
+        }
+
+        modalFilterType.on('change', updateModalVisibility);
+        Object.values(modalInputs).forEach(input => {
+            input.on('change', fetchModalData);
+        });
+        
+        // Sync Modal filters with Dashboard filters when Modal Opens
+        $('#statisticsDetailModal').on('show.bs.modal', function () {
+            // Option 1: Copy values from dashboard to modal
+            const dashType = $('#recapFilterType').val();
+            modalFilterType.val(dashType);
+            
+            // Trigger visibility update which also fetches data
+            updateModalVisibility();
+            
+            // Sync values (complex due to Flatpickr instances, but basic value copy might work)
+            // Ideally we just let it fetch default or current modal state.
+            // Let's just trigger updateModalVisibility() to load data based on current modal inputs.
         });
     });
 </script>
