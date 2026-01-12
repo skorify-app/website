@@ -222,12 +222,11 @@ class SubtestController extends Controller
         $subtest = Subtest::where('subtest_id', $subtest_id)->first();
         if (!$subtest->exists()) return response()->json(null, 404);
 
-        $name = $subtest->subtest_image_name;
-        $subtestName = $subtest->subtest_name ?? '';
-        $path = public_path("images/subtest/$name");
+        $subtest_image_name = $subtest->subtest_image_name;
+        $subtest_name = $subtest->subtest_name ?? '';
+        $path = public_path("images/subtest/$subtest_image_name");
         if (File::exists($path)) File::delete($path);
 
-        DB::table('choices')->where('question_id', $subtest_id)->delete();
         DB::table('questions')->where('subtest_id', $subtest_id)->delete();
         Subtest::destroy($subtest_id);
 
@@ -236,9 +235,13 @@ class SubtestController extends Controller
             $actor = auth()->user()->full_name ?? auth()->user()->email ?? 'System';
             $actorId = auth()->user()->account_id ?? null;
             $recipients = Account::whereIn('role', ['ADMIN', 'STAFF'])->get();
-            Notification::send($recipients, new SubtestChangedNotification($actor, $actorId, 'menghapus', $subtestName));
-        } catch (\Exception $e) {
-        }
+            Notification::send(
+                $recipients,
+                new SubtestChangedNotification(
+                    $actor, $actorId, 'menghapus', $subtest_name
+                )
+            );
+        } catch (\Exception $e) {}
 
         return response()->json(null, 204);
     }
@@ -263,7 +266,7 @@ class SubtestController extends Controller
 
             // Track changes for notification
             $changes = [];
-            
+
             // Check name change
             $subtest_name = $request->input('name');
             if ($subtest->subtest_name !== $subtest_name) {
@@ -273,7 +276,7 @@ class SubtestController extends Controller
                     'new' => $subtest_name
                 ];
             }
-            
+
             $other_subtest = Subtest::where('subtest_name', $subtest_name)->first();
             if ($other_subtest && $subtest['subtest_id'] !== $other_subtest['subtest_id']) {
                 return response()->json(null, 403);
@@ -284,25 +287,25 @@ class SubtestController extends Controller
             $minutes = (int) ($request->input('duration_minutes') ?? 0);
             $seconds = (int) ($request->input('duration_seconds_input') ?? 0);
             $newDurationSeconds = ($hours * 3600) + ($minutes * 60) + $seconds;
-            
+
             if ($subtest->duration_seconds !== $newDurationSeconds) {
                 // Format duration for display
                 $oldH = floor($subtest->duration_seconds / 3600);
                 $oldM = floor(($subtest->duration_seconds % 3600) / 60);
                 $oldS = $subtest->duration_seconds % 60;
-                
+
                 $oldDuration = '';
                 if ($oldH > 0) $oldDuration .= $oldH . ' jam ';
                 if ($oldM > 0) $oldDuration .= $oldM . ' menit ';
                 if ($oldS > 0) $oldDuration .= $oldS . ' detik';
                 $oldDuration = trim($oldDuration) ?: '0 detik';
-                
+
                 $newDuration = '';
                 if ($hours > 0) $newDuration .= $hours . ' jam ';
                 if ($minutes > 0) $newDuration .= $minutes . ' menit ';
                 if ($seconds > 0) $newDuration .= $seconds . ' detik';
                 $newDuration = trim($newDuration) ?: '0 detik';
-                
+
                 $changes[] = [
                     'field' => 'durasi',
                     'old' => $oldDuration,
@@ -312,7 +315,7 @@ class SubtestController extends Controller
 
             $subtest->subtest_name = $subtest_name;
             $subtest->duration_seconds = $newDurationSeconds;
-            
+
             // Check icon change
             if ($request->hasFile('icon')) {
                 $changes[] = [
@@ -320,7 +323,7 @@ class SubtestController extends Controller
                     'old' => null,
                     'new' => 'updated'
                 ];
-                
+
                 $icon_file_name = $subtest->subtest_image_name;
 
                 $extension = $request->file('icon')->getClientOriginalExtension();
@@ -335,7 +338,7 @@ class SubtestController extends Controller
 
             // Check if there are any changes before proceeding
             $hasFileChanges = $request->hasFile('icon') || $request->hasFile('questions_file') || $request->hasFile('images_zip');
-            
+
             if (empty($changes) && !$hasFileChanges) {
                 return response()->json([
                     'success' => false,
@@ -358,7 +361,7 @@ class SubtestController extends Controller
                         'new' => 'updated'
                     ];
                 }
-                
+
                 if ($request->hasFile('images_zip')) {
                     $changes[] = [
                         'field' => 'gambar',
@@ -366,9 +369,9 @@ class SubtestController extends Controller
                         'new' => 'updated'
                     ];
                 }
-                
+
                 DB::beginTransaction();
-                
+
                 try {
                     // Hapus semua soal lama jika ada file soal baru
                     if ($request->hasFile('questions_file')) {
@@ -377,13 +380,13 @@ class SubtestController extends Controller
                                   ->from('questions')
                                   ->where('subtest_id', $subtest_id);
                         })->delete();
-                        
+
                         DB::table('question_images')->whereIn('question_id', function($query) use ($subtest_id) {
                             $query->select('question_id')
                                   ->from('questions')
                                   ->where('subtest_id', $subtest_id);
                         })->delete();
-                        
+
                         DB::table('questions')->where('subtest_id', $subtest_id)->delete();
                     }
 
@@ -391,15 +394,15 @@ class SubtestController extends Controller
                      * EXTRACT ZIP GAMBAR
                      * =============================== */
                     $extractPath = storage_path("app/public/questions/{$subtest_id}");
-                    
+
                     if ($request->hasFile('images_zip')) {
                         // Hapus folder gambar lama
                         if (File::exists($extractPath)) {
                             File::deleteDirectory($extractPath);
                         }
-                        
+
                         File::ensureDirectoryExists($extractPath);
-                        
+
                         $zip = new \ZipArchive;
                         if ($zip->open($request->images_zip->getRealPath()) !== true) {
                             throw new Exception('Gagal membuka ZIP gambar');
@@ -491,7 +494,7 @@ class SubtestController extends Controller
                             }
                         }
                     }
-                    
+
                     DB::commit();
                 } catch (Exception $e) {
                     DB::rollBack();
