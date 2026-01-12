@@ -84,20 +84,23 @@ $(document).ready(function() {
 });
 
 // Chart initialization for dashboard
+let userStatsChartInstance = null;
+
 ;(function() {
     if (typeof Chart === 'undefined') return;
     var ctx = document.getElementById('userStatsChart');
     if (!ctx) return;
 
-    var labels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agust','Sept','Okt','Nov','Des'];
-    var data = [5,6,10,15,6,20,20,15,13,13,18,14];
+    // Get monthly statistics data from backend
+    var labels = window.dashboardData?.monthlyStatsLabels || [];
+    var data = window.dashboardData?.monthlyStatsData || [];
 
-    new Chart(ctx, {
+    userStatsChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Pengerjaan',
+                label: 'Jumlah Peserta',
                 data: data,
                 fill: true,
                 backgroundColor: 'rgba(37,99,235,0.06)',
@@ -108,14 +111,92 @@ $(document).ready(function() {
         },
         options: {
             maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true, grid: { drawBorder: false } },
-                x: { grid: { display: false } }
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 5,
+                    right: 5
+                }
             },
-            plugins: { legend: { display: false } }
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    ticks: {
+                        count: 6,
+                        autoSkip: false,
+                        stepSize: 20
+                    },
+                    grid: { drawBorder: false } 
+                },
+                x: { 
+                    grid: { display: false },
+                    ticks: {
+                        maxRotation: 0,
+                        minRotation: 0
+                    }
+                }
+            },
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            // Get full label with year from labelsWithYear array
+                            const index = context[0].dataIndex;
+                            const labelsWithYear = window.dashboardData?.monthlyStatsLabelsWithYear || [];
+                            return labelsWithYear[index] || context[0].label;
+                        },
+                        label: function(context) {
+                            return context.parsed.y + ' tes dikerjakan';
+                        }
+                    }
+                }
+            }
         }
     });
 })();
+
+// Year filter event listener
+document.addEventListener('DOMContentLoaded', function() {
+    const yearFilter = document.getElementById('yearFilter');
+    
+    if (yearFilter) {
+        yearFilter.addEventListener('change', function() {
+            const selectedYear = this.value;
+            
+            // Fetch new data via AJAX
+            fetch(`/admin/chart-data/${selectedYear}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update chart data
+                    if (userStatsChartInstance) {
+                        userStatsChartInstance.data.labels = data.labels;
+                        userStatsChartInstance.data.datasets[0].data = data.data;
+                        
+                        // Update global data for tooltip
+                        window.dashboardData.monthlyStatsLabels = data.labels;
+                        window.dashboardData.monthlyStatsLabelsWithYear = data.labelsWithYear;
+                        window.dashboardData.monthlyStatsData = data.data;
+                        
+                        // Refresh chart
+                        userStatsChartInstance.update();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching chart data:', error);
+                    alert(`Gagal memuat data chart. Error: ${error.message}`);
+                });
+        });
+    }
+});
 
 // ===== FIX UNTUK MODAL DAN DROPDOWN =====
 $(document).on('shown.bs.modal', function() {

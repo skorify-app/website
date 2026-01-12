@@ -18,4 +18,8 @@ class Subtest extends Model
         'subtest_image_name',
         'duration_seconds',
     ];
+    public function scores()
+    {
+        return $this->hasMany(Score::class, 'subtest_id', 'subtest_id');
+    }
 }

@@ -230,6 +230,9 @@
                         if (buttonContainer) {
                             buttonContainer.innerHTML = '<span class="text-muted">Dibaca</span>';
                         }
+                        
+                        // Check if all notifications are now read and hide badge
+                        checkAndHideBadge();
                     }
                 })
                 .catch(error => {
@@ -285,6 +288,8 @@
                                 if (buttonContainer && buttonContainer.querySelector('.btn-mark-read')) {
                                     buttonContainer.innerHTML = '<span class="text-muted">Dibaca</span>';
                                 }
+                                // Add 'read' class to the notification item
+                                item.classList.add('read');
                             }
                         });
                         
@@ -300,6 +305,12 @@
                         // Re-enable button
                         button.disabled = false;
                         button.innerHTML = originalText;
+                        
+                        // Hide notification badge since all are now read
+                        const badge = document.getElementById('notification-badge');
+                        if (badge) {
+                            badge.style.display = 'none';
+                        }
                     }
                 })
                 .catch(error => {
@@ -310,6 +321,29 @@
                 });
             }
         });
+        
+        // Helper function to check if all notifications are read and hide badge
+        function checkAndHideBadge() {
+            const notificationsList = document.getElementById('notifications-list');
+            const unreadNotifications = notificationsList.querySelectorAll('li');
+            
+            let hasUnread = false;
+            unreadNotifications.forEach(item => {
+                const contentDiv = item.querySelector('div[style*="flex:1"]');
+                // Check if notification is unread (black color, not gray)
+                if (contentDiv && contentDiv.style.color !== 'rgb(153, 153, 153)') {
+                    hasUnread = true;
+                }
+            });
+            
+            // Hide badge if no unread notifications
+            if (!hasUnread) {
+                const badge = document.getElementById('notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            }
+        }
         </script>
         <script src="{{ @asset('js/subtest.js') }}"></script>
         <script src="{{ @asset('js/sweetalert2.js') }}"></script>

@@ -3,46 +3,95 @@
 
 
 
-    // Morris bar chart
-    Morris.Bar({
-        element: 'morris-bar-chart',
-        data: [{
-            y: '2006',
-            a: 100,
-            b: 90
-        }, {
-            y: '2007',
-            a: 75,
-            b: 65
-        }, {
-            y: '2008',
-            a: 50,
-            b: 40
-        }, {
-            y: '2009',
-            a: 75,
-            b: 65
-        }, {
-            y: '2010',
-            a: 50,
-            b: 40
-        }, {
-            y: '2011',
-            a: 75,
-            b: 65
-        }, {
-            y: '2012',
-            a: 100,
-            b: 90
-        }],
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['A', 'B'],
-        barColors: ['#343957', '#5873FE'],
-        hideHover: 'auto',
-        gridLineColor: '#eef0f2',
-        resize: true
-    });
+    // Chart.js bar chart - Monthly Statistics for Staff Dashboard
+    var ctx = document.getElementById('staffStatsChart');
+    if (ctx && typeof Chart !== 'undefined') {
+        var labels = window.dashboardData?.monthlyStatsLabels || [];
+        var data = window.dashboardData?.monthlyStatsData || [];
+        
+        // Store chart instance globally for update access
+        window.staffChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah',
+                    data: data,
+                    backgroundColor: '#343957',
+                    borderColor: '#343957',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#888',
+                            min: 0,
+                            max: 100,
+                            stepSize: 20
+                        },
+                        gridLines: {
+                            display: false,
+                            drawBorder: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            color: 'transparent',
+                            zeroLineColor: 'transparent'
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            maxRotation: 0,
+                            minRotation: 0,
+                            autoSkip: false,
+                            fontColor: '#888',
+                            padding: 10
+                        },
+                        gridLines: {
+                            display: false,
+                            drawBorder: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            color: 'transparent',
+                            zeroLineColor: 'transparent'
+                        }
+                    }]
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        // Year Filter Event Listener
+        $('#yearFilter').on('change', function() {
+            var selectedYear = $(this).val();
+            
+            // Show loading state if needed (optional)
+            // Iterate over datasets to reset data temporarily? No need.
+
+            $.ajax({
+                url: '/admin/chart-data/' + selectedYear,
+                type: 'GET',
+                success: function(response) {
+                    if (window.staffChart) {
+                        // Update chart data
+                        window.staffChart.data.labels = response.labels;
+                        window.staffChart.data.datasets[0].data = response.data;
+                        window.staffChart.update();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching chart data:", error);
+                    alert("Gagal memuat data chart. Silakan coba lagi.");
+                }
+            });
+        });
+    }
+
 
     $('#info-circle-card').circleProgress({
         value: 0.70,

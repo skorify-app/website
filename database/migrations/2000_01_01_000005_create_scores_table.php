@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('scores', function (Blueprint $table) {
             $table->integerIncrements('score_id')->unsigned()->primary();
-            $table->unsignedSmallInteger('subtest_id');
+            $table->unsignedSmallInteger('subtest_id')->nullable();
             $table->ulid('account_id');
             $table->smallInteger('score');
             $table->timestamp('recorded_at')->useCurrent();
